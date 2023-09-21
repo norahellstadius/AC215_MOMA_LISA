@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+dvc = "*"
+
+[packages]
+google-cloud-storage = "*"
+numpy = "*"
+scrapy = "*"
+beautifulsoup4 = "*"
+pandas = "*"
+
+[requires]
+python_version = "3.8"
