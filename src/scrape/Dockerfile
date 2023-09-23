@@ -5,7 +5,7 @@ FROM python:3.8-slim-buster
 # This allows us to use "pipenv shell" as a container entry point.
 ENV PYENV_SHELL=/bin/bash
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=secrets/mega-pipeline.json
+#ENV GOOGLE_APPLICATION_CREDENTIALS=secrets/mega-pipeline.json
 
 # Ensure we have an up to date baseline, install dependencies 
 RUN set -ex; \
@@ -20,6 +20,8 @@ WORKDIR /scrape
 
 # Add Pipfile, Pipfile.lock
 ADD Pipfile Pipfile.lock /scrape/
+
+RUN pipenv lock
 
 RUN pipenv sync
 
