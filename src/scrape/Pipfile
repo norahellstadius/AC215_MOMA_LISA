@@ -12,6 +12,7 @@ numpy = "*"
 scrapy = "*"
 beautifulsoup4 = "*"
 pandas = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.8"

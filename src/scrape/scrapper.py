@@ -1,6 +1,10 @@
 import requests
+import time 
+import os
+import yaml
 from bs4 import BeautifulSoup
-import time
+from google.cloud import storage 
+
 
 # ------- HELPER FUNCTIONS ----------
 def get_page(url):
@@ -14,8 +18,8 @@ def get_meta_data(soup):
     get_recipe_url = lambda x: 'https://www.bbcgoodfood.com' + x.select_one('a').get('href')
     get_img_url = lambda x: x.find('img', class_='image__img')['src']
 
-    elements = soup.find_all(class_='dynamic-list__list-item')
     dish_list = []
+    elements = soup.find_all(class_='dynamic-list__list-item')
 
     for s in elements:
         d = {}
@@ -74,3 +78,36 @@ URL = 'https://www.bbcgoodfood.com/recipes/collection/all-time-top-20-recipes'
 soup = get_page(URL)
 meta_data_reciepes = get_meta_data(soup)
 data_for_dishes = fetch_recipe_data(meta_data_reciepes)
+
+client = storage.Client()
+bucket_name = 'cook_this_scrape'
+bucket = client.bucket(bucket_name)
+
+#----- upload data to Google buckets -------
+for dish in data_for_dishes:
+    try: 
+        response = requests.get(dish['url_img'])
+         # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            object_name_image = 'images/' + dish['name']
+
+            blob_image = bucket.blob(object_name_image)
+            blob_image.upload_from_string(response.content)
+        else: 
+            print('failed to download image')
+
+    except Exception as e:
+        print(f'An error occured with image upload: {str(e)}')
+
+    try:
+        yaml_content = yaml.dump(dish)
+        object_name_text = 'text/' + dish['name']
+        blob_text = bucket.blob(object_name_text)
+        blob_text.upload_from_string(yaml_content)
+    except Exception as e:
+        print(f'An error occured with text upload: {str(e)}')
+
+        
+
+
+
