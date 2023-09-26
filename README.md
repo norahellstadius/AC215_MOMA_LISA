@@ -5,7 +5,8 @@
 ## Milestone 2
 The two steps of the data pipeline, are scraping data from BBC Good Foods and processing this data. 
 For this milestone, we created two containers, atomic for each step, ensuring that each step can be run independently.
-The containers are built using the Dockerfiles, with their images uploaded to [DockerHub](https://hub.docker.com/repository/docker/amidgley/scrape/general).
+The containers are built using the Dockerfiles, with their images uploaded to [DockerHub-scrape](https://hub.docker.com/repository/docker/amidgley/scrape/general)
+and [DockerHub-preprocess](https://hub.docker.com/repository/docker/amidgley/preprocess/general).
 We have used the following commands in creating the containers:
 ```
 ```
@@ -17,3 +18,9 @@ The project name is `cook_this`, and the two buckets are respectively `cook_this
 
 The data is not live, and therefore our project will not require data version control (dvc). We have used `PipFile` and `PipFile.lock` to 
 manage our package dependencies tailored for each container. 
+
+To run the containers, we have used the following commands:
+```
+docker-compose run scrape 
+docker-compose run preprocess
+```
