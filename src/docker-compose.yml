@@ -2,15 +2,11 @@ version: '3.7'
 services:
   scrape:
     image: scrape:1.0
-    # tty: true
-    # stdin_open: true
     volumes:
       - ./scrape:/scrape
-
-  
-  # preprocess:
-    
-  #   container_name: preprocess:1.0
-  #   volumes:
-  #     - ./preprocess:/preprocess
-    
+      - ./secrets:/secrets
+  preprocess:
+    image: preprocess:1.0
+    volumes:
+      - ./preprocess:/preprocess
+      - ./secrets:/secrets
