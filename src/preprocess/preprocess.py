@@ -2,6 +2,7 @@ import requests
 import yaml
 from google.cloud import storage
 
+
 # Preprocessing file
 print("We are processing your data. Please wait patiently...")
 
