@@ -1,10 +1,9 @@
 version: '3.7'
 services:
   scrape:
-    build: 
-      context: ./scrape
-      dockerfile: Dockerfile
-    container_name: scrape:1.0
+    image: scrape:1.0
+    # tty: true
+    # stdin_open: true
     volumes:
       - ./scrape:/scrape
 
