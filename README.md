@@ -13,6 +13,7 @@ We have used the following commands in creating the containers:
 In the first step - scrape - we will scrape BBC Good Foods for recipes and images, saving the data to a GCP bucket. In
 the second step - preprocess - we will process the data, pulling from the scrape bucket, and save the processed data to 
 another GCP bucket. We have set up these two buckets as well as a service account, allowing the automation of this process. 
+The project name is `cook_this`, and the two buckets are respectively `cook_this_scrape` and `cook_this_preprocess`.
 
 The data is not live, and therefore our project will not require data version control (dvc). We have used `PipFile` and `PipFile.lock` to 
 manage our package dependencies tailored for each container. 
