@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  scrape:
+    build: 
+      context: ./scrape
+      dockerfile: Dockerfile
+    container_name: scrape:1.0
+    volumes:
+      - ./scrape:/scrape
+
+  
+  # preprocess:
+    
+  #   container_name: preprocess:1.0
+  #   volumes:
+  #     - ./preprocess:/preprocess
+    
