@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  scrape:
+    image: scrape:1.0
+    volumes:
+      - ./scrape:/scrape
+      - ./secrets:/secrets
+  preprocess:
+    image: preprocess:1.0
+    volumes:
+      - ./preprocess:/preprocess
+      - ./secrets:/secrets

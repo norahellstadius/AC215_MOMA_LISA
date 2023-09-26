@@ -5,7 +5,7 @@ FROM python:3.8-slim-buster
 # This allows us to use "pipenv shell" as a container entry point.
 ENV PYENV_SHELL=/bin/bash
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=secrets/data-service-account.json 
+ENV GOOGLE_APPLICATION_CREDENTIALS=./secrets/data-service-account.json 
 # Ensure we have an up to date baseline, install dependencies 
 RUN set -ex; \
     apt-get update && \
@@ -13,7 +13,8 @@ RUN set -ex; \
     apt-get install -y --no-install-recommends build-essential git && \
     pip install --no-cache-dir --upgrade pip && \
     pip install pipenv && \
-    mkdir -p /preprocess
+    mkdir -p /preprocess && \
+    mkdir -p /secrets 
 
 WORKDIR /preprocess
 
