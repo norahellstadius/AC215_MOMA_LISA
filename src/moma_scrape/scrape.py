@@ -2,8 +2,7 @@ import urllib.request
 import requests
 from bs4 import BeautifulSoup
 
-url = "https://www.moma.org/media/W1siZiIsIjQ2MTI1NiJdLFsicCIsImNvbnZlcnQiLCItcXVhbGl0eSA4MCAtcmVzaXplIDE1MzZ4MTUzNlx1MDAzZSJdXQ.jpg?sha=68352f31a84be027"
-# Open the URL as Browser, not as python urllib
+# Create url for each page
 def create_url(page_number):
     return f"https://www.moma.org/collection/?utf8=%E2%9C%93&q=&classifications=any&date_begin=Pre-1850&date_end=2023&with_images=1&on_view=1&page={page_number}&direction=fwd"
 
@@ -18,14 +17,13 @@ def get_image_urls(base_url: str) -> list[str]:
     return image_urls
 
 
-response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
-print(response.status_code)
-#urllib.request.urlretrieve(url, "geeksforgeeks.png", headers={'User-Agent': 'Mozilla/5.0'})
+if __name__ == "__main__":
+    images_url = get_image_urls(create_url(1))
+    base_url = 'https://www.moma.org'
+    for i in range(5):
+        url = base_url + images_url[i]
+        response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
+        if response.status_code == 200:
+            with open(f"./artworks/test_{i}.jpg", 'wb') as f:
+                f.write(response.content)
 
-# Opening the image and displaying it (to confirm its presence)
-# page=urllib.request.Request(url,headers={'User-Agent': 'Mozilla/5.0'}) 
-#infile=urllib.request.urlopen(page).read()
-
-if response.status_code == 200:
-    with open("./artworks/test.jpg", 'wb') as f:
-        f.write(response.content)
