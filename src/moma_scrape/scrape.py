@@ -18,12 +18,12 @@ def get_image_urls(base_url: str) -> list[str]:
 
 
 if __name__ == "__main__":
-    images_url = get_image_urls(create_url(1))
+    images_url = get_image_urls(create_url(4))
     base_url = 'https://www.moma.org'
     for i in range(5):
         url = base_url + images_url[i]
         response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
         if response.status_code == 200:
-            with open(f"./artworks/test_{i}.jpg", 'wb') as f:
+            with open(f"./artworks/test2_{i}.jpg", 'wb') as f:
                 f.write(response.content)
 
