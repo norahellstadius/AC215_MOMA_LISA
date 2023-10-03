@@ -100,7 +100,7 @@ from bs4 import BeautifulSoup
 
 # Create url for each page
 def create_url(page_number):
-    return f"https://www.moma.org/collection//?utf8=%E2%9C%93&q=&classifications=any&\date_begin=Pre-1850&date_end=2023&\with_images=1&on_view=1&\page={page_number}&direction=fwd"
+    return f"https://www.moma.org/collection/?utf8=%E2%9C%93&q=&classifications=any&date_begin=Pre-1850&date_end=2023&with_images=1&on_view=1&page={page_number}&direction=fwd"
 
 # Get contents from response and convert to beautifulsoup object
 def get_image_urls(base_url: str) -> List[str]:
@@ -110,6 +110,7 @@ def get_image_urls(base_url: str) -> List[str]:
     images = soup.find_all("img")
     # Get the src attribute of each image
     image_urls = [image["src"] for image in images]
+    print(len(images))
     return image_urls
 
 def scrape_img_url(image_url: str, id: int) -> None:
@@ -135,8 +136,7 @@ if __name__ == "__main__":
     base_url = 'https://www.moma.org'
     j = 0
 
-    for i in range(1, 200):
-        print(i)
+    for i in range(1, 25):
         try:
             site_url = create_url(i)
             img_urls = get_image_urls(site_url)
