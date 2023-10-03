@@ -13,6 +13,7 @@ scrapy = "*"
 beautifulsoup4 = "*"
 pandas = "*"
 pyyaml = "*"
+#add zipfile
 
 [requires]
 python_version = "3.8"
