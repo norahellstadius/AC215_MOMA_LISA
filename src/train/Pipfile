@@ -16,6 +16,8 @@ transformers = "*"  #check that this workd
 torch = "*"
 torchvision = "*"
 matplotlib = "*"
+google-cloud-aiplatform = "*"
+wandb = "*"
 
 [requires]
 python_version = "3.8"
