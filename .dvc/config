@@ -2,5 +2,7 @@
     remote = imagenet_scrape
 ['remote "moma_scrape"']
     url = gs://moma_scrape
+    projectname = cookthis-400019
 ['remote "imagenet_scrape"']
     url = gs://imagenet_scrape
+    projectname = cookthis-400019
