@@ -1,0 +1,6 @@
+[core]
+    remote = imagenet_scrape
+['remote "moma_scrape"']
+    url = gs://moma_scrape
+['remote "imagenet_scrape"']
+    url = gs://imagenet_scrape
