@@ -10,7 +10,11 @@ dvc = "*"
 google-cloud-storage = "*"
 numpy = "*"
 pandas = "*"
-dask = "*"
+Pillow = "*"
+diffusers = "*" #check that this workd 
+transformers = "*"  #check that this workd 
+torch = "*"
+torchvision = "*"
 
 [requires]
 python_version = "3.8"
