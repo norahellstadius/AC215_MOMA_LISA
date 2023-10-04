@@ -132,3 +132,4 @@ dmypy.json
 secrets/*.json
 
 .DS_Store*
+/data
