@@ -51,7 +51,7 @@ class PreprocessData:
             output_file.write("\n")
 
         self.upload_data_to_google_bucket(self.dest_jsonl)
-        os.remove(dest_jsonl)
+        os.remove(self.dest_jsonl)
 
     def get_text_label(self, image):
         """Generate text labels for images using a captioning model."""
