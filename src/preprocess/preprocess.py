@@ -1,72 +1,74 @@
-from google.cloud import storage
-from io import BytesIO
-from PIL import Image
-import numpy as np
-from diffusers import DiffusionPipeline
-from torchvision import transforms
 import os
-import torch 
-import yaml
+import numpy as np
+import tensorflow as tf
+from google.cloud import storage
+from PIL import Image
+from io import BytesIO
+from transformers import pipeline
+import json
 
+class PreprocessData:
+    def __init__(self):
+        self.client = storage.Client()
+        self.source_bucket_name = 'moma_scrape'
+        self.destination_bucket_name = 'preprocess_data'
+        self.folder_name = folder_name = 'imgs'
+        self.meta_data = []
+        self.captioner = pipeline("image-to-text", model="Salesforce/blip-image-captioning-base")
+        self.dest_jsonl = 'metadata.jsonl'
 
-# Preprocessing file
-print("We are processing your data. Please wait patiently...")
+    def fetch_images_data(self, num_images = 100):
+        """Fetch image data from Google Cloud Storage."""
+        bucket = self.client.bucket(self.source_bucket_name)
+        blobs = bucket.list_blobs(prefix=self.folder_name)
 
-client = storage.Client()
-BUCKET_SRC_NAME_MOMA = "moma_scrape"
-BUCKET_SRC_NAME_IMAGENET = "imagenet_scrape"
-FOLDER_NAME_MOMA = "imgs"
-FOLDER_NAME_IMAGENET = "images"
-BUCKET_DEST_NAME = "preprocess_data"
+        for i, blob in enumerate(blobs):
+            print(i)
+            if i >= num_images:
+                break
+            
+            image_data = BytesIO(blob.download_as_bytes())
+            image = Image.open(image_data)
+            # Ensure the image has 3 channels
+            if image.mode != "RGB":
+                image = image.convert("RGB")  
+            image_name = f"{(blob.name).split('imgs/')[1].split('.jpeg')[0]}.png"
+            image.save(image_name, 'PNG')
 
-def get_model():
-    pipe = DiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", torch_dtype=torch.float16, use_safetensors=True)
-    pipe = pipe.to("cuda")
-    return pipe
+            self.upload_data_to_google_bucket(image_name)
+            os.remove(image_name)
+            image_label = self.get_text_label(image)
+            image_data = {'file_name': image_name, "text": image_label}
+            self.meta_data.append(image_data)
+            print(f'preprocessed: {image_name}')
+            
+        return 
 
-def get_images(bucket_name, folder_name):
-    img_data_dict = {}
-    bucket = client.bucket(bucket_name)
-    blobs = bucket.list_blobs(prefix = folder_name)
-    for blob in blobs:
-        image_data = BytesIO(blob.download_as_bytes())        
-        image = Image.open(image_data)
+    def create_jsonl_file(self):
+        output_file = open(self.dest_jsonl, 'w', encoding='utf-8')
+        for dic in self.meta_data:
+            json.dump(dic, output_file) 
+            output_file.write("\n")
+
+        self.upload_data_to_google_bucket(self.dest_jsonl)
+        os.remove(dest_jsonl)
+
+    def get_text_label(self, image):
+        """Generate text labels for images using a captioning model."""
         
-        #check that image does not only have 1 channel
-        if image.mode != "RGB":
-             image = image.convert("RGB")
+        generated_text = self.captioner(image)[0]['generated_text']
+        return "MoMA artwork of: " + generated_text
 
-        transform = transforms.Compose([
-            transforms.Resize((512, 512)),  # Resize the image to 512x512 pixels
-            transforms.ToTensor()  # Convert the image to a PyTorch tensor
-        ])
-        tensor = transform(image)
-        tensor = tensor.half().to('cuda').unsqueeze(0)
-        img_data_dict[os.path.join(bucket_name, blob.name)] = np.array(tensor)
-    return img_data_dict
 
-def get_image_embedding(img_data_dict):
-    img_embed_dict = {}
-    pipe = get_model()
-    for img_dir, img_data_tensor in img_data_dict.items():
-        img_latent_sample = pipe.vae.encode(img_data_tensor).to('cuda').latent_dist.sample()
-        img_embed_dict[img_dir] = img_latent_sample
-    return img_embed_dict
-
-def upload_images_to_google_cloud(bucket_name, data_dict, data_dict_name):
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(f'{data_dict_name}.yaml')
-    yaml_data = yaml.dump(data_dict, default_flow_style=False)
-    blob.upload_from_string(yaml_data)
-
+    def upload_data_to_google_bucket(self, name):
+        bucket = self.client.get_bucket(self.destination_bucket_name)
+        blob = bucket.blob(f'train/{name}')
+        blob.upload_from_filename(f"{name}")
+        print(f"uploaded to gs://{self.destination_bucket_name}/train/{name}")
 
 if __name__ == "__main__":
-    img_data_imagenet_dict = get_images(BUCKET_SRC_NAME_IMAGENET, FOLDER_NAME_IMAGENET)
-    img_embed_imagenet_dict = get_image_embedding(img_data_imagenet_dict)
-
-    img_data_moma_dict = get_images(BUCKET_SRC_NAME_MOMA, FOLDER_NAME_MOMA)
-    img_embed_moma_dict = get_image_embedding(img_data_moma_dict)
-
-    upload_images_to_google_cloud(BUCKET_DEST_NAME, img_embed_imagenet_dict, 'imagenet_embeding')
-    upload_images_to_google_cloud(BUCKET_DEST_NAME, img_embed_moma_dict, 'moma_embeding')
-
+    n = 200
+    process = PreprocessData()
+    process.fetch_images_data(num_images=n)
+    process.create_jsonl_file()
+    print("Done")
