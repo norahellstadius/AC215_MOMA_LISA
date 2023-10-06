@@ -1,9 +1,10 @@
 # MOMA Lisa'
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
-
+TODO: mention cloud storage solutions
 TODO: Dask, TFRecords
-TODO: Multi-GPU
+TODO: mention data management (dvc)
+TODO: Multi-GPU, mention severless
 
 
 **Project Description:**
@@ -82,23 +83,29 @@ We are aware that this project is a work-in-progress, and the following list des
 
 ### Current training pipeline:
 1. Start a Docker container
-This step pulls a docker container form dockerhub, that has all the necessary packages & dependicies installed to run training. 
+This step pulls a docker container form dockerhub, that has all the necessary packages & dependencies installed to run training. 
 
 ```bash
-docker pull amidgley/train:linux_1.0
-docker run -t amidgley/train:linux_1.0
+docker pull amidgley/train:linux_2.0
+docker compose run train
 ```
+This will launch a bash shell within the container, in the `train` folder. The next steps assumed that you are in the 
+root folder, one level higher than `train`. The reason for this layout choice is to ensure proper linkage with the
+secrets directory. 
 
 2. Setup for training
-This step clones the diffuser github, moves our training script to the correct location within it, fetches the data from the GCP bucket & preprocesses it, ready for training. 
+This step clones the diffuser github, moves our training script to the correct location within it, 
+fetches the data from the GCP bucket & preprocesses it, ready for training. 
 
 ```bash
-sh training_setup.sh
+sh train/training_setup.sh
 ```
 
 3. Initiate training
-This script sets the necessary environment variables to connect to Weights & Biases, for experiment tracking, and initiates training. The trained model's artifacts will be saved to Weights & Biases. 
+This script sets the necessary environment variables to connect to Weights & Biases, for experiment tracking, 
+and initiates training. The trained model's artifacts will be saved to Weights & Biases. Our Weights & Biases API key
+is contained within the secrets folder. 
 
 ```bash
-sh train.sh
+sh train/train.sh
 ```
