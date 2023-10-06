@@ -2,16 +2,8 @@
 
 cd "${destination_dir}/examples/text_to_image"
 
-# setup virtual environment
-if [ ! -d "momalisa" ]; then
-    python3 -m venv momalisa
-fi
-. ./momalisa/bin/activate
-
 # install packages
-pip install -r requirements.txt
 pip install git+https://github.com/huggingface/diffusers.git
-pip install wandb
 
 # set global variables
 export MODEL_NAME= "CompVis/stable-diffusion-v1-4"
@@ -19,19 +11,16 @@ export TRAIN_DIR= "./train"
 export OUTPUT_DIR= "moma-sd-finetuned"
 
 # initialize accelerate environment
-# TODO: change to accelarate config --default
-accelerate config
+accelerate init default
 
 # wandb setup
-json_file="../../../../secrets/wandb_api_key.json"
 if [ ! -s ~/.netrc ]; then
-    API_KEY=$(cat "${json_file}")
-    wandb login $API_KEY
+    wandb login WANDB_API_KEY
 else
     wandb login
 fi
 
-
+# run training
 accelerate launch train_text_to_image.py \
   --pretrained_model_name_or_path=$MODEL_NAME \
   --train_data_dir=$TRAIN_DIR \
