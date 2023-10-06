@@ -10,9 +10,9 @@ if [ ! -d "$DESR_DIR" ]; then
 fi
 
 # mve train script
-mv train_text_to_image.py "${destination_dir}/examples/text_to_image/train_text_to_image.py"
+cp "train/train_text_to_image.py" "${DESR_DIR}/examples/text_to_image/train_text_to_image.py"
 
 # cd into training directory 
-cd "${destination_dir}/examples/text_to_image"
+cd "${DESR_DIR}/examples/text_to_image"
 
 python "../../../train/fetch_train_data.py"
