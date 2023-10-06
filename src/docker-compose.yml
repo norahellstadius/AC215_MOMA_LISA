@@ -1,4 +1,3 @@
-version: '3.7'
 services:
   scrape:
     image: scrape:1.0
@@ -6,7 +5,12 @@ services:
       - ./scrape:/scrape
       - ./secrets:/secrets
   preprocess:
-    image: preprocess:1.0
+    image: amidgley/preprocess:3.0_linux
     volumes:
       - ./preprocess:/preprocess
+      - ./secrets:/secrets
+  train:
+    image: amidgley/train:3.0_linux
+    volumes:
+      - ./train:/train
       - ./secrets:/secrets
