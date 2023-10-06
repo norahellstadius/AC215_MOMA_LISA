@@ -5,7 +5,9 @@ services:
       - ./scrape:/scrape
       - ./secrets:/secrets
   preprocess:
+
     image: amidgley/preprocess:3.0_linux
+
     volumes:
       - ./preprocess:/preprocess
       - ./secrets:/secrets
