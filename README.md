@@ -29,21 +29,18 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
     │   └── milestone3.md
     └── src
         ├── docker-compose.yml
-        ├── metadata.jsonl
         ├── preprocess
         │   ├── Dockerfile
-        │   ├── Pipfile
-        │   ├── Pipfile.lock
         │   ├── preprocess.py
         │   └── requirements.txt
         ├── scrape
         │   ├── Dockerfile
         │   ├── Pipfile
         │   ├── Pipfile.lock
-        │   ├── imagenet_data.py
         │   └── scraper.py
         ├── secrets
-        │   └── data-service-account.json
+        │   ├── data-service-account.json
+        │   └── wandb_api_key.json
         └── train
             ├── Dockerfile
             ├── fetch_train_data.py
