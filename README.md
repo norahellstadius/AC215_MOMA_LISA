@@ -10,6 +10,48 @@ TODO: Multi-GPU, mention severless
 **Project Description:**
 Our project takes a user's prompt, and generates a MoMa artwork. We finetune Stable Diffusion with the artworks currently on display in the Museum Of Modern Art (MOMA) in New York. 
 
+### Project organization 
+
+    ├── LICENSE
+    ├── README.md
+    ├── data.dvc
+    ├── imgs
+    │   ├── coffee.png
+    │   ├── industrial.png
+    │   ├── monet_picasso.png
+    │   ├── runpod_detail.png
+    │   ├── runpod_overview.png
+    │   ├── seasons.png
+    │   ├── usa.png
+    │   └── wb1.png
+    ├── reports
+    │   ├── milestone2.md
+    │   └── milestone3.md
+    └── src
+        ├── docker-compose.yml
+        ├── metadata.jsonl
+        ├── preprocess
+        │   ├── Dockerfile
+        │   ├── Pipfile
+        │   ├── Pipfile.lock
+        │   ├── preprocess.py
+        │   └── requirements.txt
+        ├── scrape
+        │   ├── Dockerfile
+        │   ├── Pipfile
+        │   ├── Pipfile.lock
+        │   ├── imagenet_data.py
+        │   └── scraper.py
+        ├── secrets
+        │   └── data-service-account.json
+        └── train
+            ├── Dockerfile
+            ├── fetch_train_data.py
+            ├── requirements.txt
+            ├── train.sh
+            └── training_setup.sh
+
+
 ## AC215 - Milestone 3 - MOMA Lisa
 
 ### Milestone 3
@@ -67,7 +109,7 @@ We also use W&B Artifacts to save our model.
 ### Serverless training
 We use [RunPod]('https://www.runpod.io/) to run our training. RunPod rents out different GPU per hour, with high availibilty. You can also use it for mutli-GPU training. For our Stable Diffusion finetuning we used a single RTX 3090 GPU with 24GB of VRAM. The fine-tuning training takes ~2.5 hrs on this GPU. 
 <figure>
-    <img src="./imgs/runpod_detail.png" height="200" />
+    <img src="./imgs/runpod_overview.png" height="200" />
     <figcaption>GPU specification and cost on RunPod. </figcaption>
 </figure>
 
