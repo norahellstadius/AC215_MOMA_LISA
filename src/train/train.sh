@@ -1,27 +1,27 @@
 #!/bin/bash
 
-cd "${destination_dir}/examples/text_to_image"
+DESR_DIR="../diffusers"
+cd "${DESR_DIR}/examples/text_to_image"
 
 # install packages
 pip install git+https://github.com/huggingface/diffusers.git
 
 # set global variables
-export MODEL_NAME= "CompVis/stable-diffusion-v1-4"
-export TRAIN_DIR= "./train"
-export OUTPUT_DIR= "moma-sd-finetuned"
+export MODEL_NAME="CompVis/stable-diffusion-v1-4"
+export TRAIN_DIR="./train/train_data"
+export OUTPUT_DIR="moma-sd-finetuned"
 
 # initialize accelerate environment
-accelerate init default
+accelerate config default
 
 # wandb setup
-if [ ! -s ~/.netrc ]; then
-    wandb login WANDB_API_KEY
-else
-    wandb login
-fi
+cd "/../.."
+api_key_file="$WANDB_API_KEY_PATH"
+key=$(cat "$api_key_file")
+wandb login $key
 
 # run training
-accelerate launch train_text_to_image.py \
+accelerate launch "diffusers/examples/text_to_image/train_text_to_image.py" \
   --pretrained_model_name_or_path=$MODEL_NAME \
   --train_data_dir=$TRAIN_DIR \
   --use_ema \
