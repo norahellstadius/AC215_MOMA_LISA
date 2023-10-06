@@ -21,8 +21,6 @@ WORKDIR /scrape
 # Add Pipfile, Pipfile.lock
 ADD Pipfile Pipfile.lock /scrape/
 
-RUN pipenv lock
-
 RUN pipenv sync
 
 # Source code
