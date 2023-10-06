@@ -31,11 +31,9 @@ class PreprocessData:
             image_name = f"{(blob.name).split('imgs/')[1].split('.jpeg')[0]}.png"
             image.save(image_name, 'PNG')
             
-            print('hello')
             self.upload_data_to_google_bucket(image_name)
             os.remove(image_name)
             image_label = self.get_text_label(image)
-            print('hello3')
             image_data = {'file_name': image_name, "text": image_label}
             self.meta_data.append(image_data)
             print(f'preprocessed: {image_name}')
@@ -46,12 +44,9 @@ class PreprocessData:
         for dic in self.meta_data:
             json.dump(dic, output_file) 
             output_file.write("\n")
-
-        bucket = self.client.get_bucket(self.destination_bucket_name)
-        blob = bucket.blob('train/metadata.jsonl')
-        blob.upload_from_file('metadata.jsonl')
-
-
+        
+        self.upload_data_to_google_bucket(self.dest_jsonl)
+        
     def get_text_label(self, image):
         """Generate text labels for images using a captioning model."""
         
