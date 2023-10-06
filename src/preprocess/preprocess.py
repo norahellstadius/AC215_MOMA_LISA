@@ -12,7 +12,7 @@ class PreprocessData:
         self.client = storage.Client()
         self.source_bucket_name = 'moma_scrape'
         self.destination_bucket_name = 'preprocess_data'
-        self.folder_name = folder_name = 'imgs'
+        self.folder_name = 'imgs'
         self.meta_data = []
         self.captioner = pipeline("image-to-text", model="Salesforce/blip-image-captioning-base")
         self.dest_jsonl = 'metadata.jsonl'
@@ -23,10 +23,8 @@ class PreprocessData:
         blobs = bucket.list_blobs(prefix=self.folder_name)
 
         for i, blob in enumerate(blobs):
-            print(i)
             if i >= num_images:
                 break
-            
             image_data = BytesIO(blob.download_as_bytes())
             image = Image.open(image_data)
             # Ensure the image has 3 channels
@@ -58,7 +56,6 @@ class PreprocessData:
         
         generated_text = self.captioner(image)[0]['generated_text']
         return "MoMA artwork of: " + generated_text
-
 
     def upload_data_to_google_bucket(self, name):
         bucket = self.client.get_bucket(self.destination_bucket_name)
