@@ -1,6 +1,11 @@
 # MOMA Lisa'
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
+
+TODO: Dask, TFRecords
+TODO: Multi-GPU
+
+
 **Project Description:**
 Our project takes a user's prompt, and generates a MoMa artwork. We finetune Stable Diffusion with the artworks currently on display in the Museum Of Modern Art (MOMA) in New York. 
 
@@ -9,9 +14,13 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
 ### Milestone 3
 Milestone 3 contains two changes: 1) we changed the topic of the project from recipes to art and 2) we implemented the training pipeline. 
 
-We saw 
-### Training setup
-The ~1200 images collected from MOMA are annotated using a image-to-text model.  We prepend the string "A MOMA artwork of: " to these annotations. The MOMA art work together with these descriptions form our training data. We use these pairs to fine-tune SD 
+Our new project topic is creating art using AI. This is inspired by a current [artwork]('https://www.moma.org/calendar/exhibitions/5535') on display at the MOMA. The installation creates novel art in real time. Whilst it is captivating to watch the algorithm, we missed the chance to interact with it rather than only observe. Our project therefore is to create an installation that allows visitors to create art with their input. For now the user interacts through text with this installtion but as a next step we will allow for image input as well. 
+
+### Preprocessing
+We scraped the artworks currently on display at the MOMA from their [website]('https://www.moma.org/collection/'). These images are then stored in a Google Cloud Platform bucket. For the preprocessing all images are annotated using a image-to-text model. We used the freely accessible Salesforce ["blip-image-captioning-base"]('https://huggingface.co/Salesforce/blip-image-captioning-base')model.  We also prepend the string "A MOMA artwork of: " to these annotations. The MOMA art work together with these descriptions form our training data. The processed MOMA images together with the annotations are stored in a GCP bucket as well. During training this dataset is fetched and processed through a Torch Dataloader. 
+
+### Machine Learning Workflow
+As a base model we use ["CompVis/stable-diffusion-v1-4"]('https://huggingface.co/CompVis/stable-diffusion-v1-4') which is a pre-trained SD model. To finetune we modified the finetuning script from [Diffusers]('https://github.com/huggingface/diffusers'). Our changes were in formatting the training data, connecting to W&B, and managing dependencies. For Milestone 3 our largest experiment was with 200 out of the 1200 images. The code makes use accelerate to optimize GPU usage and deploys Pytorch for the neural networks.  
 
 ### Experiment tracking
 We tracked our trainig using [Weights and Biases]('https://wandb.ai/site'). First we ran 3 smaller experiments to see if the training works correctly, the validation prompts are evaluated and the loss is decreasing. The graph shows a jumpy loss function during training. Based on this graph and the caveat on [HuggingFace]('https://huggingface.co/docs/diffusers/v0.13.0/en/training/text2image') about catastrophic forgetting we decided to reduce our learning rate from 10e-8 to 10e-9. 
@@ -52,7 +61,7 @@ We cherry picked an example for each of these prompts from our training.
     <figcaption>A MOMA artwork of: Picasso and Monet</figcaption>
 </figure> 
 
-
+We also use W&B Artifacts to save our model. 
 
 ### Serverless training
 We use [RunPod]('https://www.runpod.io/) to run our training. RunPod rents out different GPU per hour, with high availibilty. You can also use it for mutli-GPU training. For our Stable Diffusion finetuning we used a single RTX 3090 GPU with 24GB of VRAM. The fine-tuning training takes ~2.5 hrs on this GPU. 
@@ -61,5 +70,35 @@ We use [RunPod]('https://www.runpod.io/) to run our training. RunPod rents out d
     <figcaption>GPU specification and cost on RunPod. </figcaption>
 </figure>
 
+### Future Improvements
+We are aware that this project is a work-in-progress, and the following list describes steps that we want to make in the future, to improve it. 
+1. Remove downloading of files from the GCP bucket
+- We think that it will be more efficient to process the data directly from the bucket rather than saving the files to disk, then loading them when using them. 
+2. Store data in a ready-to-use form
+- This will help improve workflow, as this will allow us to bypass the preprocessing done in `fetch_train_data.py`. In addition to saving the raw images on the GCP buckets, we should save the images & captions, in the format that is compatitble with our Pytorch dataloader.
+3. Improve model performance
+- Our model is learning, but there is room for better fine-tuning. One way that we see that we can do this, is by using longer captions in training. Instead of using current captioning model, we propose using [SceneXplain](https://scenex.jina.ai/). 
 
-### Code structure
+
+### Current training pipeline:
+1. Start a Docker container
+This step pulls a docker container form dockerhub, that has all the necessary packages & dependicies installed to run training. 
+
+```bash
+docker pull amidgley/train:linux_1.0
+docker run -t amidgley/train:linux_1.0
+```
+
+2. Setup for training
+This step clones the diffuser github, moves our training script to the correct location within it, fetches the data from the GCP bucket & preprocesses it, ready for training. 
+
+```bash
+sh training_setup.sh
+```
+
+3. Initiate training
+This script sets the necessary environment variables to connect to Weights & Biases, for experiment tracking, and initiates training. The trained model's artifacts will be saved to Weights & Biases. 
+
+```bash
+sh train.sh
+```
