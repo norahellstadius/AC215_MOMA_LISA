@@ -8,6 +8,8 @@ import urllib.request
 import requests
 from bs4 import BeautifulSoup
 
+# TODO: Create new page
+
 # Create url for each page
 def create_url(page_number):
     return f"https://www.moma.org/collection/?utf8=%E2%9C%93&q=&classifications=any&date_begin=Pre-1850&date_end=2023&with_images=1&on_view=1&page={page_number}&direction=fwd"
