@@ -1,35 +1,14 @@
-# Use the official Debian-hosted Python image
-FROM python:3.8-slim-buster
+FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-devel
 
-# Tell pipenv where the shell is. 
-# This allows us to use "pipenv shell" as a container entry point.
 ENV PYENV_SHELL=/bin/bash
 
-ENV GOOGLE_APPLICATION_CREDENTIALS=./secrets/data-service-account.json 
-# Ensure we have an up to date baseline, install dependencies 
-RUN set -ex; \
-    apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends build-essential git && \
-    pip install --no-cache-dir --upgrade pip && \
-    pip install pipenv && \
-    mkdir -p /preprocess && \
-    mkdir -p /secrets 
+ENV GOOGLE_APPLICATION_CREDENTIALS=./secrets/data-service-account.json
 
 WORKDIR /preprocess
+COPY requirements.txt .
 
-# Add Pipfile, Pipfile.lock
-ADD Pipfile Pipfile.lock /preprocess/
+RUN pip install -r requirements.txt
 
-RUN pipenv lock
+RUN mkdir -p /preprocess /secrets
 
-RUN pipenv sync
-
-# Source code
 ADD . /preprocess
-
-# Entry point
-ENTRYPOINT ["/bin/bash"]
-
-# Get into the pipenv shell
-CMD ["-c", "pipenv shell"]

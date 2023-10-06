@@ -5,14 +5,12 @@ services:
       - ./scrape:/scrape
       - ./secrets:/secrets
   preprocess:
-
     image: amidgley/preprocess:3.0_linux
-
     volumes:
       - ./preprocess:/preprocess
       - ./secrets:/secrets
   train:
-    image: amidgley/train:3.0_linux
+    image: amidgley/train:linux_2.0
     volumes:
       - ./train:/train
       - ./secrets:/secrets
