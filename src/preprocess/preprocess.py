@@ -47,8 +47,10 @@ class PreprocessData:
             json.dump(dic, output_file) 
             output_file.write("\n")
 
-        self.upload_data_to_google_bucket(self.dest_jsonl)
-        # os.remove(self.dest_jsonl)
+        bucket = self.client.get_bucket(self.destination_bucket_name)
+        blob = bucket.blob('train/metadata.jsonl')
+        blob.upload_from_file('metadata.jsonl')
+
 
     def get_text_label(self, image):
         """Generate text labels for images using a captioning model."""
@@ -63,8 +65,7 @@ class PreprocessData:
         print(f"uploaded to gs://{self.destination_bucket_name}/train/{name}")
 
 if __name__ == "__main__":
-    sys.setrecursionlimit(20000)
-    n = 200
+    n = 100
     process = PreprocessData()
     process.fetch_images_data(num_images=n)
     process.create_jsonl_file()
