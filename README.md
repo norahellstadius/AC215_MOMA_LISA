@@ -142,9 +142,15 @@ experiment tracking and it is convenient. Our docker is based on a CUDA version 
 contains the GPU-related libraries for deep learning. We use a requirements.txt file to install the necessary packages. 
 
 ### Current training pipeline:
+It should be noted that before training, preprocessing needs to be run. Preprocessing can be run by following the steps,
+```bash
+docker pull amidgley/preprocess:linux_3.0
+docker compose run preprocess
+python preprocess/preprocess.py
+```
+The following are the steps required to implement the training pipeline.
 1. Start a Docker container
-This step pulls a docker container form dockerhub, that has all the necessary packages & dependencies installed to run training. 
-
+This step pulls a docker container form dockerhub, that has all the necessary packages & dependencies installed to run training.
 ```bash
 docker pull amidgley/train:linux_2.0
 docker compose run train
