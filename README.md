@@ -50,6 +50,19 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
 
 * `src/train/training_setup.sh` Collect data and utils file for training. 
 
+### Bucket structure 
+The following is structure of our files on Google Cloud Storage. DVC tracking ensures data management, and version
+control over our data. The `moma_scrape` bucket contains the raw images that were scrapped from the MOMA website. 
+The `preprocess_data` bucket contains the processed images, with their captions. 
+
+    ├── dvc tracking
+    │   ├── ...
+    ├── moma_scrape
+    │   └── imgs/
+    │       ├── ...
+    ├── preprocess_data
+    │   └── train/
+    │       ├── ...
 
 ## AC215 - Milestone 3 - MOMA Lisa
 
