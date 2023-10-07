@@ -2,8 +2,6 @@
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
 TODO: mention cloud storage solutions
-TODO: Dask, TFRecords
-TODO: mention data management (dvc)
 TODO: Multi-GPU, mention severless
 
 
@@ -52,6 +50,19 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
 
 * `src/train/training_setup.sh` Collect data and utils file for training. 
 
+### Bucket structure 
+The following is structure of our files on Google Cloud Storage. DVC tracking ensures data management, and version
+control over our data. The `moma_scrape` bucket contains the raw images that were scrapped from the MOMA website. 
+The `preprocess_data` bucket contains the processed images, with their captions. 
+
+    ├── dvc tracking
+    │   ├── ...
+    ├── moma_scrape
+    │   └── imgs/
+    │       ├── ...
+    ├── preprocess_data
+    │   └── train/
+    │       ├── ...
 
 ## AC215 - Milestone 3 - MOMA Lisa
 
@@ -69,9 +80,13 @@ to parallelize across multiple CPU cores. We use DVC to manage our data, and ens
 
 ### Machine Learning Workflow
 As a base model we use ["CompVis/stable-diffusion-v1-4"]('https://huggingface.co/CompVis/stable-diffusion-v1-4') which is a pre-trained SD model. 
-To finetune we modified the finetuning script from [Diffusers]('https://github.com/huggingface/diffusers'). 
-Our changes were in formatting the training data, connecting to W&B, and managing dependencies. For Milestone 3 our largest 
-experiment was with 200 out of the 1200 images. The code makes use accelerate to optimize GPU usage and deploys Pytorch for the neural networks.  
+To finetune we modified the finetuning script from [Diffusers]('https://github.com/huggingface/diffusers'). To do so we clone the Diffusers GitHub repository and switch the training file with our version. In this way we can make use of their utils and dependencies. 
+
+Our changes to the script are in the formatting of the training data, connecting to W&B, and managing dependencies. For Milestone 3 our largest experiment was with 200 out of the 1200 images. The code makes use of accelerate to optimize GPU usage and deploys Pytorch for the neural networks. We have implemented multi-GPU and run a short run on it. The figure shows how two GPU are run simultaneously. 
+<figure>
+    <img src="./imgs/multi-GPU.jpeg" height="200" />
+    <figcaption>Multi GPU training</figcaption>
+</figure>
 
 ### Experiment tracking
 We tracked our training using [Weights and Biases]('https://wandb.ai/site'). First we ran 3 smaller experiments to see if the training works correctly, the validation prompts are evaluated and the loss is decreasing. The graph shows a jumpy loss function during training. Based on this graph and the caveat on [HuggingFace]('https://huggingface.co/docs/diffusers/v0.13.0/en/training/text2image') about catastrophic forgetting we decided to reduce our learning rate from 10e-8 to 10e-9. 
@@ -121,20 +136,25 @@ We use [RunPod]('https://www.runpod.io/) to run our training. RunPod rents out d
     <figcaption>GPU specification and cost on RunPod. </figcaption>
 </figure>
 
-### Future Improvements
-We are aware that this project is a work-in-progress, and the following list describes steps that we want to make in the future, to improve it. 
-1. Remove downloading of files from the GCP bucket
-- We think that it will be more efficient to process the data directly from the bucket rather than saving the files to disk, then loading them when using them. 
-2. Store data in a ready-to-use form
-- This will help improve workflow, as this will allow us to bypass the preprocessing done in `fetch_train_data.py`. In addition to saving the raw images on the GCP buckets, we should save the images & captions, in the format that is compatitble with our Pytorch dataloader.
-3. Improve model performance
-- Our model is learning, but there is room for better fine-tuning. One way that we see that we can do this, is by using longer captions in training. Instead of using current captioning model, we propose using [SceneXplain](https://scenex.jina.ai/). 
-
+### Containers
+We currently have 3 containers setup, namely for scraping, preprocessing, and training. The first two containers are from
+the previous milestone but updated for our new project idea. The training container is new, and is the focus of this milestone.
+This container contains all our training scripts, and modelling components. This container contains
+Google Cloud Service credentials, and thus can easily access our GCP buckets. It will fetch data from our GCP buckets. 
+We made the decision to save our model to Weights & Biases rather than to a GCP bucket, as we are already using W&B for
+experiment tracking and it is convenient. Our docker is based on a CUDA version of Pytorch image, which
+contains the GPU-related libraries for deep learning. We use a requirements.txt file to install the necessary packages. 
 
 ### Current training pipeline:
+It should be noted that before training, preprocessing needs to be run. Preprocessing can be run by following the steps,
+```bash
+docker pull amidgley/preprocess:linux_3.0
+docker compose run preprocess
+python preprocess/preprocess.py
+```
+The following are the steps required to implement the training pipeline.
 1. Start a Docker container
-This step pulls a docker container form dockerhub, that has all the necessary packages & dependencies installed to run training. 
-
+This step pulls a docker container form dockerhub, that has all the necessary packages & dependencies installed to run training.
 ```bash
 docker pull amidgley/train:linux_2.0
 docker compose run train
@@ -159,3 +179,12 @@ is contained within the secrets folder.
 ```bash
 sh train/train.sh
 ```
+
+### Future Improvements
+We are aware that this project is a work-in-progress, and the following list describes steps that we want to make in the future, to improve it. 
+1. Remove downloading of files from the GCP bucket
+- We think that it will be more efficient to process the data directly from the bucket rather than saving the files to disk, then loading them when using them. 
+2. Store data in a ready-to-use form
+- This will help improve workflow, as this will allow us to bypass the preprocessing done in `fetch_train_data.py`. In addition to saving the raw images on the GCP buckets, we should save the images & captions, in the format that is compatitble with our Pytorch dataloader.
+3. Improve model performance
+- Our model is learning, but there is room for better fine-tuning. One way that we see that we can do this, is by using longer captions in training. Instead of using current captioning model, we propose using [SceneXplain](https://scenex.jina.ai/). 
