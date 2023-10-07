@@ -15,14 +15,7 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
     ├── README.md
     ├── data.dvc
     ├── imgs
-    │   ├── coffee.png
-    │   ├── industrial.png
-    │   ├── monet_picasso.png
-    │   ├── runpod_detail.png
-    │   ├── runpod_overview.png
-    │   ├── seasons.png
-    │   ├── usa.png
-    │   └── wb1.png
+    │   ├── ...
     ├── reports
     │   ├── milestone2.md
     │   └── milestone3.md
@@ -46,6 +39,17 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
             ├── requirements.txt
             ├── train.sh
             └── training_setup.sh
+
+### Code structure
+* `src/preprocess/preprocess.py` Fetches MOMA images from 'moma_scrape' GCP bucket, annotates them and uploads to 'preprocess_data' bucket.
+
+* `src/scrape/scraper.py` Scrape MOMA collection of artworks currently on display and store jpeg files in 'moma_scrape' GCP bucket. 
+
+* `src/train/fetch_train_data.py` Fetch training data from 'preprocess_data' bucket and store it for training. 
+
+* `src/train/train.sh` Start the fine-tuning of Stable Diffusion, **requires** to first run `training_setup.sh`
+
+* `src/train/training_setup.sh` Collect data and utils file for training. 
 
 
 ## AC215 - Milestone 3 - MOMA Lisa
