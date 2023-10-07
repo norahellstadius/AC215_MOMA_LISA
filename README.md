@@ -1,9 +1,10 @@
 # MOMA Lisa'
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
-
+TODO: mention cloud storage solutions
 TODO: Dask, TFRecords
-TODO: Multi-GPU
+TODO: mention data management (dvc)
+TODO: Multi-GPU, mention severless
 
 
 **Project Description:**
@@ -59,14 +60,21 @@ Milestone 3 contains two changes: 1) we changed the topic of the project from re
 
 Our new project topic is creating art using AI. This is inspired by a current [artwork]('https://www.moma.org/calendar/exhibitions/5535') on display at the MOMA. The installation creates novel art in real time. Whilst it is captivating to watch the algorithm, we missed the chance to interact with it rather than only observe. Our project therefore is to create an installation that allows visitors to create art with their input. For now the user interacts through text with this installtion but as a next step we will allow for image input as well. 
 
-### Preprocessing
-We scraped the artworks currently on display at the MOMA from their [website]('https://www.moma.org/collection/'). These images are then stored in a Google Cloud Platform bucket. For the preprocessing all images are annotated using a image-to-text model. We used the freely accessible Salesforce ["blip-image-captioning-base"]('https://huggingface.co/Salesforce/blip-image-captioning-base')model.  We also prepend the string "A MOMA artwork of: " to these annotations. The MOMA art work together with these descriptions form our training data. The processed MOMA images together with the annotations are stored in a GCP bucket as well. During training this dataset is fetched and processed through a Torch Dataloader. 
+### Data and Preprocessing
+We scraped the artworks currently on display at the MOMA from their [website]('https://www.moma.org/collection/'). These images are then stored in a Google Cloud Platform bucket. For the preprocessing all images are annotated using a image-to-text model. We used the freely accessible Salesforce ["blip-image-captioning-base"]('https://huggingface.co/Salesforce/blip-image-captioning-base')model.  We also prepend the string "A MOMA artwork of: " to these annotations. The MOMA art work together with these descriptions form our training data. The processed MOMA images together with the annotations are stored in a GCP bucket as well. 
+During training this dataset is fetched and processed through a Torch DataLoader. This provides an efficient data loading
+and batching capabilities that will enable our project to scale. We use this in place of TFRecords, as we are using Pytorch. 
+The processing of our data caption generation, requiring GPUs. Dasks is not helpful here, as we are using GPUs, and not needing
+to parallelize across multiple CPU cores. We use DVC to manage our data, and ensure that it is tracked and versioned.
 
 ### Machine Learning Workflow
-As a base model we use ["CompVis/stable-diffusion-v1-4"]('https://huggingface.co/CompVis/stable-diffusion-v1-4') which is a pre-trained SD model. To finetune we modified the finetuning script from [Diffusers]('https://github.com/huggingface/diffusers'). Our changes were in formatting the training data, connecting to W&B, and managing dependencies. For Milestone 3 our largest experiment was with 200 out of the 1200 images. The code makes use accelerate to optimize GPU usage and deploys Pytorch for the neural networks.  
+As a base model we use ["CompVis/stable-diffusion-v1-4"]('https://huggingface.co/CompVis/stable-diffusion-v1-4') which is a pre-trained SD model. 
+To finetune we modified the finetuning script from [Diffusers]('https://github.com/huggingface/diffusers'). 
+Our changes were in formatting the training data, connecting to W&B, and managing dependencies. For Milestone 3 our largest 
+experiment was with 200 out of the 1200 images. The code makes use accelerate to optimize GPU usage and deploys Pytorch for the neural networks.  
 
 ### Experiment tracking
-We tracked our trainig using [Weights and Biases]('https://wandb.ai/site'). First we ran 3 smaller experiments to see if the training works correctly, the validation prompts are evaluated and the loss is decreasing. The graph shows a jumpy loss function during training. Based on this graph and the caveat on [HuggingFace]('https://huggingface.co/docs/diffusers/v0.13.0/en/training/text2image') about catastrophic forgetting we decided to reduce our learning rate from 10e-8 to 10e-9. 
+We tracked our training using [Weights and Biases]('https://wandb.ai/site'). First we ran 3 smaller experiments to see if the training works correctly, the validation prompts are evaluated and the loss is decreasing. The graph shows a jumpy loss function during training. Based on this graph and the caveat on [HuggingFace]('https://huggingface.co/docs/diffusers/v0.13.0/en/training/text2image') about catastrophic forgetting we decided to reduce our learning rate from 10e-8 to 10e-9. 
 
 <figure>
     <img src="./imgs/wb1.png" height="200" />
@@ -125,23 +133,29 @@ We are aware that this project is a work-in-progress, and the following list des
 
 ### Current training pipeline:
 1. Start a Docker container
-This step pulls a docker container form dockerhub, that has all the necessary packages & dependicies installed to run training. 
+This step pulls a docker container form dockerhub, that has all the necessary packages & dependencies installed to run training. 
 
 ```bash
-docker pull amidgley/train:linux_1.0
-docker run -t amidgley/train:linux_1.0
+docker pull amidgley/train:linux_2.0
+docker compose run train
 ```
+This will launch a bash shell within the container, in the `train` folder. The next steps assumed that you are in the 
+root folder, one level higher than `train`. The reason for this layout choice is to ensure proper linkage with the
+secrets directory. 
 
 2. Setup for training
-This step clones the diffuser github, moves our training script to the correct location within it, fetches the data from the GCP bucket & preprocesses it, ready for training. 
+This step clones the diffuser github, moves our training script to the correct location within it, 
+fetches the data from the GCP bucket & preprocesses it, ready for training. 
 
 ```bash
-sh training_setup.sh
+sh train/training_setup.sh
 ```
 
 3. Initiate training
-This script sets the necessary environment variables to connect to Weights & Biases, for experiment tracking, and initiates training. The trained model's artifacts will be saved to Weights & Biases. 
+This script sets the necessary environment variables to connect to Weights & Biases, for experiment tracking, 
+and initiates training. The trained model's artifacts will be saved to Weights & Biases. Our Weights & Biases API key
+is contained within the secrets folder. 
 
 ```bash
-sh train.sh
+sh train/train.sh
 ```
