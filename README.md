@@ -40,7 +40,7 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
             └── training_setup.sh
 
 ### Code structure
-* `src/preprocess/preprocess.py` Fetches MOMA images from 'moma_scrape' GCP bucket, annotates them by generate a text caption for each image and uploads to 'preprocess_data' bucket.
+* `src/preprocess/preprocess.py` Fetches MOMA images from 'moma_scrape' GCP bucket, converts the images to png formate and annotates them by generate a text caption and uploads to 'preprocess_data' bucket.
 
 * `src/scrape/scraper.py` Scrape MOMA collection of artworks currently on display and store jpeg files in 'moma_scrape' GCP bucket. 
 
