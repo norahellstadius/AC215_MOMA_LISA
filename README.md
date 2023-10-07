@@ -40,20 +40,21 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
             └── training_setup.sh
 
 ### Code structure
-* `src/preprocess/preprocess.py` Fetches MOMA images from 'moma_scrape' GCP bucket, annotates them and uploads to 'preprocess_data' bucket.
+* `src/preprocess/preprocess.py` Fetches MOMA images from 'moma_scrape' GCP bucket, annotates them by generate a text caption for each image and uploads to 'preprocess_data' bucket.
 
 * `src/scrape/scraper.py` Scrape MOMA collection of artworks currently on display and store jpeg files in 'moma_scrape' GCP bucket. 
 
 * `src/train/fetch_train_data.py` Fetch training data from 'preprocess_data' bucket and store it for training. 
 
-* `src/train/train.sh` Start the fine-tuning of Stable Diffusion, **requires** to first run `training_setup.sh`
-
 * `src/train/training_setup.sh` Collect data and utils file for training. 
+
+* `src/train/train.sh` Start the fine-tuning of Stable Diffusion, **requires** to first run `training_setup.sh`
 
 ### Bucket structure 
 The following is structure of our files on Google Cloud Storage. DVC tracking ensures data management, and version
 control over our data. The `moma_scrape` bucket contains the raw images that were scrapped from the MOMA website. 
-The `preprocess_data` bucket contains the processed images, with their captions. 
+The `preprocess_data` bucket contains the processed images, with their corresponding captions. The text captions are stored in the JSONL file. The JSONL file consists of a series of dictionaries, with each dictionary comprising two  keys: 'file_name' and 'text.' The 'file_name' key corresponds to the image's name, while the 'text' key is the image's caption.
+
 
     ├── dvc tracking
     │   ├── ...
@@ -62,7 +63,11 @@ The `preprocess_data` bucket contains the processed images, with their captions.
     │       ├── ...
     ├── preprocess_data
     │   └── train/
-    │       ├── ...
+    │       ├── metadata.jsonl
+            ├── moma_0.png
+            ├── moma_1.png
+            ├── ...
+        
 
 ## AC215 - Milestone 3 - MOMA Lisa
 
