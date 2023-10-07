@@ -80,9 +80,13 @@ to parallelize across multiple CPU cores. We use DVC to manage our data, and ens
 
 ### Machine Learning Workflow
 As a base model we use ["CompVis/stable-diffusion-v1-4"]('https://huggingface.co/CompVis/stable-diffusion-v1-4') which is a pre-trained SD model. 
-To finetune we modified the finetuning script from [Diffusers]('https://github.com/huggingface/diffusers'). 
-Our changes were in formatting the training data, connecting to W&B, and managing dependencies. For Milestone 3 our largest 
-experiment was with 200 out of the 1200 images. The code makes use accelerate to optimize GPU usage and deploys Pytorch for the neural networks.  
+To finetune we modified the finetuning script from [Diffusers]('https://github.com/huggingface/diffusers'). To do so we clone the Diffusers GitHub repository and switch the training file with our version. In this way we can make use of their utils and dependencies. 
+
+Our changes to the script are in the formatting of the training data, connecting to W&B, and managing dependencies. For Milestone 3 our largest experiment was with 200 out of the 1200 images. The code makes use of accelerate to optimize GPU usage and deploys Pytorch for the neural networks. We have implemented multi-GPU and run a short run on it. The figure shows how two GPU are run simultaneously. 
+<figure>
+    <img src="./imgs/multi-GPU.jpeg" height="200" />
+    <figcaption>Multi GPU training</figcaption>
+</figure>
 
 ### Experiment tracking
 We tracked our training using [Weights and Biases]('https://wandb.ai/site'). First we ran 3 smaller experiments to see if the training works correctly, the validation prompts are evaluated and the loss is decreasing. The graph shows a jumpy loss function during training. Based on this graph and the caveat on [HuggingFace]('https://huggingface.co/docs/diffusers/v0.13.0/en/training/text2image') about catastrophic forgetting we decided to reduce our learning rate from 10e-8 to 10e-9. 
