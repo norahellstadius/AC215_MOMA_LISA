@@ -1,7 +1,6 @@
 #!/bin/bash
 
-DESR_DIR="../diffusers"
-cd "${DESR_DIR}/examples/text_to_image"
+DESR_DIR="diffusers"
 
 # install packages
 pip install git+https://github.com/huggingface/diffusers.git
@@ -15,7 +14,6 @@ export OUTPUT_DIR="moma-sd-finetuned"
 accelerate config default
 
 # wandb setup
-cd "/../.."
 api_key_file="$WANDB_API_KEY_PATH"
 key=$(cat "$api_key_file")
 wandb login $key
@@ -30,11 +28,11 @@ accelerate launch "diffusers/examples/text_to_image/train_text_to_image.py" \
   --gradient_accumulation_steps=4 \
   --gradient_checkpointing \
   --mixed_precision="fp16" \
-  --max_train_steps=50000 \
+  --max_train_steps=10 \
   --learning_rate=1e-06 \
   --max_grad_norm=1 \
   --lr_scheduler="constant" --lr_warmup_steps=0 \
   --output_dir=${OUTPUT_DIR} \
   --validation_prompts "A MOMA artwork of: changing seasons" "A MOMA artwork of: a coffee" "A MOMA artwork of: an industrial setting" "A MOMA artwork of: critique of the USA" "A MOMA artwork of: Picasso and Monet combined"  \
-  --num_train_epochs=100 \
+  --num_train_epochs=5 \
   --report_to="wandb"

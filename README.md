@@ -1,10 +1,6 @@
 # MOMA Lisa'
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
-TODO: mention cloud storage solutions
-TODO: Multi-GPU, mention severless
-
-
 **Project Description:**
 Our project takes a user's prompt, and generates a MoMa artwork. We finetune Stable Diffusion with the artworks currently on display in the Museum Of Modern Art (MOMA) in New York. 
 
@@ -51,9 +47,9 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
 * `src/train/train.sh` Start the fine-tuning of Stable Diffusion, **requires** to first run `training_setup.sh`
 
 ### Bucket structure 
+<<<<<<< HEAD
 The following is structure of our files on Google Cloud Storage. DVC tracking ensures data management, and version control over our data. The `moma_scrape` bucket contains the raw images that were scrapped from the MOMA website. 
 The `preprocess_data` bucket contains the processed images, with their corresponding captions. The text captions are stored in the JSONL file. The JSONL file consists of a series of dictionaries, with each dictionary comprising two  keys: 'file_name' and 'text.' The 'file_name' key corresponds to the image's name, while the 'text' key is the image's caption. The `momalisa_model` bucket stores our model. 
-
 
     ├── dvc tracking
     │   ├── ...

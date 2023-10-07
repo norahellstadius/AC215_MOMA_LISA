@@ -2,7 +2,7 @@
 
 # variables
 RESPOSITORY_URL="https://github.com/huggingface/diffusers.git"
-DESR_DIR="../diffusers"
+DESR_DIR="diffusers"
 
 # clone repository
 if [ ! -d "$DESR_DIR" ]; then
