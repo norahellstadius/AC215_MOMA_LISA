@@ -51,9 +51,8 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
 * `src/train/train.sh` Start the fine-tuning of Stable Diffusion, **requires** to first run `training_setup.sh`
 
 ### Bucket structure 
-The following is structure of our files on Google Cloud Storage. DVC tracking ensures data management, and version
-control over our data. The `moma_scrape` bucket contains the raw images that were scrapped from the MOMA website. 
-The `preprocess_data` bucket contains the processed images, with their corresponding captions. The text captions are stored in the JSONL file. The JSONL file consists of a series of dictionaries, with each dictionary comprising two  keys: 'file_name' and 'text.' The 'file_name' key corresponds to the image's name, while the 'text' key is the image's caption.
+The following is structure of our files on Google Cloud Storage. DVC tracking ensures data management, and version control over our data. The `moma_scrape` bucket contains the raw images that were scrapped from the MOMA website. 
+The `preprocess_data` bucket contains the processed images, with their corresponding captions. The text captions are stored in the JSONL file. The JSONL file consists of a series of dictionaries, with each dictionary comprising two  keys: 'file_name' and 'text.' The 'file_name' key corresponds to the image's name, while the 'text' key is the image's caption. The `momalisa_model` bucket stores our model. 
 
 
     ├── dvc tracking
@@ -61,6 +60,7 @@ The `preprocess_data` bucket contains the processed images, with their correspon
     ├── moma_scrape
     │   └── imgs/
     │       ├── ...
+    ├── momalisa_model
     ├── preprocess_data
     │   └── train/
     │       ├── metadata.jsonl
@@ -72,12 +72,18 @@ The `preprocess_data` bucket contains the processed images, with their correspon
 ## AC215 - Milestone 3 - MOMA Lisa
 
 ### Milestone 3
-Milestone 3 contains two changes: 1) we changed the topic of the project from recipes to art and 2) we implemented the training pipeline. 
+Milestone 3 contains two changes: 
+1.  We changed the topic of the project from recipes to art. 
+2.  We implemented the training pipeline. 
 
 Our new project topic is creating art using AI. This is inspired by a current [artwork]('https://www.moma.org/calendar/exhibitions/5535') on display at the MOMA. The installation creates novel art in real time. Whilst it is captivating to watch the algorithm, we missed the chance to interact with it rather than only observe. Our project therefore is to create an installation that allows visitors to create art with their input. For now the user interacts through text with this installtion but as a next step we will allow for image input as well. 
 
 ### Data and Preprocessing
-We scraped the artworks currently on display at the MOMA from their [website]('https://www.moma.org/collection/'). These images are then stored in a Google Cloud Platform bucket. For the preprocessing all images are annotated using a image-to-text model. We used the freely accessible Salesforce ["blip-image-captioning-base"]('https://huggingface.co/Salesforce/blip-image-captioning-base')model.  We also prepend the string "A MOMA artwork of: " to these annotations. The MOMA art work together with these descriptions form our training data. The processed MOMA images together with the annotations are stored in a GCP bucket as well. 
+We scraped the artworks currently on display at the MOMA from their [website]('https://www.moma.org/collection/'). These images are then stored in a Google Cloud Platform bucket called **moma_scrape**. 
+
+For the preprocessing all images are annotated using the Salesforce image-to-text model ["blip-image-captioning-base"]('https://huggingface.co/Salesforce/blip-image-captioning-base'). We also prepend the string "A MOMA artwork of: " to these annotations. The MOMA art work together with these descriptions form our training data. The processed MOMA images together with the annotations are stored in a GCP bucket called **preprocess_data**.
+
+
 During training this dataset is fetched and processed through a Torch DataLoader. This provides an efficient data loading
 and batching capabilities that will enable our project to scale. We use this in place of TFRecords, as we are using Pytorch. 
 The processing of our data caption generation, requiring GPUs. Dasks is not helpful here, as we are using GPUs, and not needing
@@ -102,7 +108,7 @@ We tracked our training using [Weights and Biases]('https://wandb.ai/site'). Fir
 </figure>
 
 
-During training five evaluation prompts are evaluated every 250 steps. These prompts give us an insight into the style SD is using. The standard loss function is not of much use for our use case. We try to teach SD an 'artsy' style, which is not captured by a loss function comparing two images but has to be evaluated by humans. The prompts are: 
+During training five evaluation prompts are evaluated every 250 steps. These prompts give us an insight into the style SD is using. The standard loss function is not of much use for our use case. We try to teach SD an 'MOMA artsy' style, which is not captured by a loss function comparing two images but has to be evaluated by humans. The prompts are: 
 
 1. A MOMA artwork of: changing seasons
 2. A MOMA artwork of: a coffee
@@ -142,23 +148,18 @@ We use [RunPod]('https://www.runpod.io/) to run our training. RunPod rents out d
 </figure>
 
 ### Containers
-We currently have 3 containers setup, namely for scraping, preprocessing, and training. The first two containers are from
-the previous milestone but updated for our new project idea. The training container is new, and is the focus of this milestone.
-This container contains all our training scripts, and modelling components. This container contains
-Google Cloud Service credentials, and thus can easily access our GCP buckets. It will fetch data from our GCP buckets. 
-We made the decision to save our model to Weights & Biases rather than to a GCP bucket, as we are already using W&B for
-experiment tracking and it is convenient. Our docker is based on a CUDA version of Pytorch image, which
-contains the GPU-related libraries for deep learning. We use a requirements.txt file to install the necessary packages. 
+We currently have 3 containers setup, namely for scraping, preprocessing, and training. The first two containers are from the previous milestone but updated for our new project idea. The training container is new, and is the focus of this milestone. The training container houses all of our training scripts and essential modeling components. It also stores crucial Google Cloud Service credentials, allowing seamless access to our GCP buckets for data retrieval.Our docker is based on a CUDA version of Pytorch image, which contains the GPU-related libraries for deep learning. We use a requirements.txt file to install the necessary packages. 
 
 ### Current training pipeline:
-It should be noted that before training, preprocessing needs to be run. Preprocessing can be run by following the steps,
+It should be noted that before training, preprocessing needs to be run. Preprocessing can be run by following the steps. 
 ```bash
 docker pull amidgley/preprocess:linux_3.0
 docker compose run preprocess
 python preprocess/preprocess.py
 ```
+
 The following are the steps required to implement the training pipeline.
-1. Start a Docker container
+1. Start a Docker container:
 This step pulls a docker container form dockerhub, that has all the necessary packages & dependencies installed to run training.
 ```bash
 docker pull amidgley/train:linux_2.0
@@ -168,7 +169,7 @@ This will launch a bash shell within the container, in the `train` folder. The n
 root folder, one level higher than `train`. The reason for this layout choice is to ensure proper linkage with the
 secrets directory. 
 
-2. Setup for training
+2. Setup for training:
 This step clones the diffuser github, moves our training script to the correct location within it, 
 fetches the data from the GCP bucket & preprocesses it, ready for training. 
 
@@ -176,7 +177,7 @@ fetches the data from the GCP bucket & preprocesses it, ready for training.
 sh train/training_setup.sh
 ```
 
-3. Initiate training
+3. Initiate training:
 This script sets the necessary environment variables to connect to Weights & Biases, for experiment tracking, 
 and initiates training. The trained model's artifacts will be saved to Weights & Biases. Our Weights & Biases API key
 is contained within the secrets folder. 
@@ -184,6 +185,8 @@ is contained within the secrets folder.
 ```bash
 sh train/train.sh
 ```
+
+After training we save our model to a GCP bucket called **momalisa_model**.
 
 ### Future Improvements
 We are aware that this project is a work-in-progress, and the following list describes steps that we want to make in the future, to improve it. 
