@@ -14,4 +14,3 @@ fi
 cp "train/train_text_to_image.py" "${DESR_DIR}/examples/text_to_image/train_text_to_image.py"
 
 python "train/fetch_train_data.py"
->>>>>>> 78898c7fe71645536578068094815184b13e0fe3
