@@ -1,10 +1,6 @@
 # MOMA Lisa'
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
-TODO: mention cloud storage solutions
-TODO: Multi-GPU, mention severless
-
-
 **Project Description:**
 Our project takes a user's prompt, and generates a MoMa artwork. We finetune Stable Diffusion with the artworks currently on display in the Museum Of Modern Art (MOMA) in New York. 
 
