@@ -1,4 +1,4 @@
-# MOMA Lisa'
+# MOMA Lisa
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
 **Project Description:**
@@ -36,15 +36,15 @@ Our project takes a user's prompt, and generates a MoMa artwork. We finetune Sta
             └── training_setup.sh
 
 ### Code structure
-* `src/preprocess/preprocess.py` Fetches MOMA images from 'moma_scrape' GCP bucket, converts the images to png formate and annotates them by generate a text caption and uploads to 'preprocess_data' bucket.
+* `src/preprocess/preprocess.py` : Fetches MOMA images from 'moma_scrape' GCP bucket, converts the images to png formate and annotates them by generate a text caption and uploads to 'preprocess_data' bucket.
 
-* `src/scrape/scraper.py` Scrape MOMA collection of artworks currently on display and store jpeg files in 'moma_scrape' GCP bucket. 
+* `src/scrape/scraper.py` : Scrape MOMA collection of artworks currently on display and store jpeg files in 'moma_scrape' GCP bucket. 
 
-* `src/train/fetch_train_data.py` Fetch training data from 'preprocess_data' bucket and store it for training. 
+* `src/train/fetch_train_data.py` : Fetch training data from 'preprocess_data' bucket and store it for training. 
 
-* `src/train/training_setup.sh` Collect data and utils file for training. 
+* `src/train/training_setup.sh` : Collect data and utils file for training. 
 
-* `src/train/train.sh` Start the fine-tuning of Stable Diffusion, **requires** to first run `training_setup.sh`
+* `src/train/train.sh` : Start the fine-tuning of Stable Diffusion, **requires** to first run `training_setup.sh`
 
 ### Bucket structure 
 The following is structure of our files on Google Cloud Storage. DVC tracking ensures data management, and version control over our data. The `moma_scrape` bucket contains the raw images that were scrapped from the MOMA website. 
@@ -145,7 +145,7 @@ We use [RunPod]('https://www.runpod.io/) to run our training. RunPod rents out d
 ### Containers
 We currently have 3 containers setup, namely for scraping, preprocessing, and training. The first two containers are from the previous milestone but updated for our new project idea. The training container is new, and is the focus of this milestone. The training container houses all of our training scripts and essential modeling components. It also stores crucial Google Cloud Service credentials, allowing seamless access to our GCP buckets for data retrieval.Our docker is based on a CUDA version of Pytorch image, which contains the GPU-related libraries for deep learning. We use a requirements.txt file to install the necessary packages. 
 
-### Current training pipeline:
+### Current training pipeline
 It should be noted that before training, preprocessing needs to be run. Preprocessing can be run by following the steps. 
 ```bash
 docker pull amidgley/preprocess:linux_3.0
