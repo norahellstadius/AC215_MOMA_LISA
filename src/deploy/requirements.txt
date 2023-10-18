@@ -1,2 +1,2 @@
 Flask==2.0.2
-transformers==4.11.3
+diffusers
