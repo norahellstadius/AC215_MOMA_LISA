@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-NUM_STEPS = 32
+NUM_STEPS = 2
 
 # Load model and tokenizer
 tokenizer = CLIPTokenizer.from_pretrained("openai/clip-vit-large-patch14", torch_dtype=torch.float16)
@@ -56,8 +56,8 @@ def latents_to_pil(latents):
     image = (image / 2 + 0.5).clamp(0, 1)
     image = image.detach().cpu().permute(0, 2, 3, 1).numpy()
     images = (image * 255).round().astype("uint8")
-    pil_images = [Image.fromarray(image) for image in images]
-    return pil_images
+    # pil_images = [Image.fromarray(image) for image in images]
+    return images
 
 def text_enc(prompts, maxlen=None):
     '''
