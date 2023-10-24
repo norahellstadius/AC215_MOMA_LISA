@@ -1,0 +1,127 @@
+# PIPELINE DEFINITION
+# Name: prediction-pipeline
+# Inputs:
+#    instance: list [Default: [{'sample_key': ['dog', 'cat']}]]
+components:
+  comp-predict:
+    executorLabel: exec-predict
+    inputDefinitions:
+      parameters:
+        instance:
+          parameterType: LIST
+  comp-save-images-to-bucket:
+    executorLabel: exec-save-images-to-bucket
+    inputDefinitions:
+      parameters:
+        bucket_name:
+          parameterType: STRING
+        predictions:
+          parameterType: STRUCT
+deploymentSpec:
+  executors:
+    exec-predict:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - predict
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef predict(instance: list):\n    endpoint = aip.Endpoint(\"projects/580339194016/locations/us-east4/endpoints/5529408791713415168\"\
+          \n                            )\n    response = endpoint.predict(instances=instance)\n\
+          \    predictions = response.predictions\n    print(\"Result:\", predictions)\n\
+          \    return predictions\n\n"
+        image: python:3.7
+    exec-save-images-to-bucket:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - save_images_to_bucket
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"' && \"\
+          $0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef save_images_to_bucket(predictions: dict, bucket_name: str):\n\
+          \    storage_client = storage.Client()\n    bucket = storage_client.bucket(bucket_name)\n\
+          \n    for i, pred in enumerate(predictions):\n        image_data = base64.b64decode(pred)\n\
+          \        blob = bucket.blob(f'image_{i}.png')\n        blob.upload_from_string(image_data,\
+          \ content_type='image/png')\n        print(f\"Image {i} saved to bucket\
+          \ {bucket_name}\")\n\n"
+        image: python:3.7
+pipelineInfo:
+  name: prediction-pipeline
+root:
+  dag:
+    tasks:
+      predict:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-predict
+        inputs:
+          parameters:
+            instance:
+              componentInputParameter: instance
+        taskInfo:
+          name: predict
+      save-images-to-bucket:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-save-images-to-bucket
+        inputs:
+          parameters:
+            bucket_name:
+              runtimeValue:
+                constant: saved_predictions
+            predictions:
+              runtimeValue:
+                constant: {}
+        taskInfo:
+          name: save-images-to-bucket
+  inputDefinitions:
+    parameters:
+      instance:
+        defaultValue:
+        - sample_key:
+          - dog
+          - cat
+        isOptional: true
+        parameterType: LIST
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.3.0
