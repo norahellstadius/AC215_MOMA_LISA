@@ -1,2 +1,8 @@
-Flask==2.0.2
+Flask
+transformers
 diffusers
+torchvision
+Pillow 
+torch 
+accelerate
+scipy

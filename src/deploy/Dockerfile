@@ -1,7 +1,7 @@
 FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
 
 # Set the working directory
-WORKDIR /workspace
+WORKDIR /app
 
 # Copy only the dependencies file and install dependencies
 COPY requirements.txt ./
