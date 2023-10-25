@@ -66,10 +66,12 @@ The `preprocess_data` bucket contains the processed images, with their correspon
 
 ## AC215 - Milestone 4 - MOMA Lisa
 
-
+This Milestone encomposed:
+1. Model deployment 
+2. ML pipeline 
 
 ## Model Deployment
-In this part we deploy our model on  Google Cloud's Vertex AI using a custom Docker container. It encompasses building a Docker image, pushing it to Google Cloud Registry (GCR), and deploying the model using the pushed image. Below we provide a step-by-step guide of the process we followed: 
+In this part we deploy our model on  Google Cloud's Vertex AI using a custom Docker container. It encompassed building a Docker image, pushing it to Google Cloud Registry (GCR), and deploying the model using the pushed image. Below we provide a step-by-step guide of the process we followed: 
 
 ### Prerequisites:
    - **Google Cloud SDK**: Install the Google Cloud SDK on your local machine.
@@ -124,5 +126,5 @@ Navigate to the project directory before executing any commands:
    - Navigate to Model Registry
    - Deploy the Model:
      1. Find and click on your model within the registry.
-     2. Click on "DEPLOY AND TEST," followed by "DEPLOY TO ENDPOINT."
+     2. Click on `DEPLOY AND TEST`, followed by `DEPLOY TO ENDPOINT`.
      3. To successfully deploy the model, select a single GPU with TESLA P4’s.
