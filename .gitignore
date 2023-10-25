@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+./secrets
 
 # Distribution / packaging
 .Python
@@ -132,3 +133,4 @@ dmypy.json
 secrets/*.json
 
 .DS_Store*
+/data

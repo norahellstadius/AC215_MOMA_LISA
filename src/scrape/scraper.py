@@ -8,6 +8,8 @@ import urllib.request
 import requests
 from bs4 import BeautifulSoup
 
+# TODO: Create new page
+
 # Create url for each page
 def create_url(page_number):
     return f"https://www.moma.org/collection/?utf8=%E2%9C%93&q=&classifications=any&date_begin=Pre-1850&date_end=2023&with_images=1&on_view=1&page={page_number}&direction=fwd"
@@ -20,7 +22,6 @@ def get_image_urls(base_url: str) -> List[str]:
     images = soup.find_all("img")
     # Get the src attribute of each image
     image_urls = [image["src"] for image in images]
-    print(len(images))
     return image_urls
 
 def scrape_img_url(image_url: str, id: int) -> None:
@@ -30,7 +31,7 @@ def scrape_img_url(image_url: str, id: int) -> None:
     print(response.status_code)
 
     if response.status_code == 200:
-        object_name_image = "imgs/" + f'moma_{id}.jpeg'
+        object_name_image = "images/" + f'moma_{id}.jpeg'
         blob_image = bucket.blob(object_name_image)
         blob_image.upload_from_string(response.content)
     else:
@@ -49,6 +50,7 @@ if __name__ == "__main__":
     for i in range(1, 25):
         try:
             site_url = create_url(i)
+            print(site_url)
             img_urls = get_image_urls(site_url)
             for x in img_urls:
                 scrape_img_url(base_url + x, j)
