@@ -6,3 +6,5 @@ Pillow
 torch 
 accelerate
 scipy
+opencv-python
+pybase64

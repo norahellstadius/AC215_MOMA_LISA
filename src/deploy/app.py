@@ -6,6 +6,8 @@ from transformers import CLIPTextModel, CLIPTokenizer
 from diffusers import AutoencoderKL, UNet2DConditionModel, LMSDiscreteScheduler
 from torchvision import transforms as tfms
 from PIL import Image
+import cv2
+import base64
 
 
 logging.basicConfig(
@@ -31,6 +33,11 @@ scheduler.set_timesteps(50)
 using_cuda = torch.cuda.is_available()
 logger.info(f"Using CUDA: {using_cuda}")
 
+def numpy_array_to_base64(array):
+    _, buffer = cv2.imencode('.png', array)
+    encoded_string = base64.b64encode(buffer)
+    return encoded_string.decode('utf-8')
+
 def load_image(p):
     '''
     Function to load images from a defined path
@@ -46,7 +53,7 @@ def pil_to_latents(image):
     init_latent_dist = vae.encode(init_image).latent_dist.sample() * 0.18215
     return init_latent_dist
 
-def latents_to_pil(latents):
+def latents_to_base64(latents):
     '''
     Function to convert latents to images
     '''
@@ -56,8 +63,8 @@ def latents_to_pil(latents):
     image = (image / 2 + 0.5).clamp(0, 1)
     image = image.detach().cpu().permute(0, 2, 3, 1).numpy()
     images = (image * 255).round().astype("uint8")
-    # pil_images = [Image.fromarray(image) for image in images]
-    return images
+    base64_imgs = [numpy_array_to_base64(image)for image in images]
+    return base64_imgs
 
 def text_enc(prompts, maxlen=None):
     '''
@@ -130,7 +137,7 @@ def predict(endpoint_id, deployed_model_id):
                 return jsonify(error="Invalid input_text in one or more instances"), 400
 
             latent_output = produce_walk(input_text[0], input_text[1], NUM_STEPS)
-            img_set= latents_to_pil(latent_output)
+            img_set= latents_to_base64(latent_output)
             # output = model.generate(input_ids, max_length=100, num_beams=5, temperature=1.5)
             generated_set_imgs.append(img_set)
 
