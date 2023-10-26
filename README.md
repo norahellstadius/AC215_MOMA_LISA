@@ -191,7 +191,3 @@ runs each of the steps in the order specified. The images below shows the simple
 2. **Hide latency by utilizing both latent spaces:** Combining walking in both the text and image latent spaces. Efficiently managing both latent spaces simultaneously can lead to smoother interactions and faster response times.
 
 3. **Design a User-Friendly Frontend:** We aim to create a user-friendly frontend that allows users to easily interact with our model. This includes enabling users to specify two prompts and generate GIFs.
-||||||| constructed merge base
-</figure>
-=======
-</figure>
