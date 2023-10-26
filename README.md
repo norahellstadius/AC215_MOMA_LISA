@@ -170,3 +170,14 @@ Navigate to the project directory before executing any commands:
      1. Find and click on your model within the registry.
      2. Click on `DEPLOY AND TEST`, followed by `DEPLOY TO ENDPOINT`.
      3. To successfully deploy the model, select a single GPU with TESLA P4’s.
+
+
+
+## Future Steps
+
+
+1. **Investigate Non-Linear Walks:** Explore the potential advantages of implementing non-linear walks within the latent spaces. This involves taking smaller steps in the middle of the two images when compared to the two endpoints.
+
+2. **Hide latency by utilizing both latent spaces:** Combining walking in both the text and image latent spaces. Efficiently managing both latent spaces simultaneously can lead to smoother interactions and faster response times.
+
+3. **Design a User-Friendly Frontend:** We aim to create a user-friendly frontend that allows users to easily interact with our model. This includes enabling users to specify two prompts and generate GIFs.
