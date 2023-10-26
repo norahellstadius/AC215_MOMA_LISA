@@ -182,14 +182,22 @@ saving these to a bucket. In the diagram below, we can see this pipeline visuali
     <img src="./imgs/pipeline.png" height="200" />
     <figcaption>ML Pipeline. </figcaption>
 </figure>
-
-
+We used Kubeflow Pipelines to create the pipeline, which consisted of `dsl` components. This pipeline's directed
+acyclic graph was created in the file `pipeline.py`. This script also ships the code off to Vertex AI Pipelines, which
+runs each of the steps in the order specified. The images below shows the simple DAG implemented in Vertex AI. 
+<figure>
+    <img src="./imgs/pipeline_gc.jpg" height="50" />
+    <figcaption>ML Pipeline DAG. </figcaption>
+</figure>
 
 ## Future Steps
-
 
 1. **Investigate Non-Linear Walks:** Explore the potential advantages of implementing non-linear walks within the latent spaces. This involves taking smaller steps in the middle of the two images when compared to the two endpoints.
 
 2. **Hide latency by utilizing both latent spaces:** Combining walking in both the text and image latent spaces. Efficiently managing both latent spaces simultaneously can lead to smoother interactions and faster response times.
 
 3. **Design a User-Friendly Frontend:** We aim to create a user-friendly frontend that allows users to easily interact with our model. This includes enabling users to specify two prompts and generate GIFs.
+||||||| constructed merge base
+</figure>
+=======
+</figure>
