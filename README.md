@@ -172,6 +172,18 @@ Navigate to the project directory before executing any commands:
      3. To successfully deploy the model, select a single GPU with TESLA P4’s.
 
 
+## ML Pipeline
+In this part we created a ML pipeline using Google Cloud's Vertex AI. The pipeline consisted
+of two main steps, predict & post-processing. In the first step, we made predictions using the model stored in the model
+registry. The predictions consist of calculating the latent space path between two points, and generating images for 
+these intermediate points. In the second step, we post-process the predictions, by converting the images to a gif, and
+saving these to a bucket. In the diagram below, we can see this pipeline visualized.
+<figure>
+    <img src="./imgs/pipeline.png" height="200" />
+    <figcaption>ML Pipeline. </figcaption>
+</figure>
+
+
 
 ## Future Steps
 
