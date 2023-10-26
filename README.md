@@ -7,14 +7,8 @@ We achieve this by transversing through the latent space, creating intermediate 
 and generate images from. The images are then used to produce a gif, which is displayed to the user.
 
 **Project Journey:**
-This is not the first topic we have investigated in this project. Previously, we were hoping
-to use image and generated caption pairs, to fine-tune a stable diffusion model on MoMA artworks. We set
-up severless training, that utilized images & captions stored in a GCP bucket with WandB used to track
-model training. However, we realized that we were unable to teach the model anything. For this reason,
-we decided to pivot to a different idea. We experimented with instead trying to learn specific lesser known
-artists styles. Unfortunately we realized that for any artist that had satisfactory set of artworks available,
-the model already knew the style, and again found ourselves unable to teach the model anything. Thus, we have switched
-to our current topic. It should be noted that the following folders of work in `src` are from previous project
+This is not the first topic we have investigated in this project. Previously, we were hoping to use image and generated caption pairs, to fine-tune a stable diffusion model on MoMA artworks. We set up severless training, that utilized images & captions stored in a GCP bucket with WandB used to track
+model training. However, we realized that the model was already to good and consequently we were unable to teach the model anything. For this reason, we decided to pivot to a different idea. We experimented with instead trying to learn specific lesser known artists styles. Unfortunately we realized that for any artist that had satisfactory set of artworks available, the model already knew the style, and again found ourselves unable to teach the model anything. Thus, we have switched to our current topic. It should be noted that the following folders of work in `src` are from previous project
 ideas and not applicable to our current idea: `train`, `preprocess`, `scrape`, `data`. 
 
 ### Project organization 
@@ -123,7 +117,7 @@ Below we provide a step-by-step guide of the process we followed:
    - **Role Permissions**: Need to ensure you have the necessary Google Cloud roles for Container Registry access.
 
 
-### Quick Start 
+### Step 0: Quick Start 
 Navigate to the project directory before executing any commands:
 
    ```bash
@@ -151,7 +145,7 @@ Navigate to the project directory before executing any commands:
 
 ### Step 3: Build a Model Using the Image on GCR:
 
-   Use the `gcloud` CLI to build a model using the Docker image you've pushed to GCR:
+   In terminal use the `gcloud` CLI to build a model using the Docker image you've pushed to GCR:
 
    ```bash
    gcloud beta ai models upload \
@@ -169,7 +163,7 @@ Navigate to the project directory before executing any commands:
    - Deploy the Model:
      1. Find and click on your model within the registry.
      2. Click on `DEPLOY AND TEST`, followed by `DEPLOY TO ENDPOINT`.
-     3. To successfully deploy the model, select a single GPU with TESLA P4’s.
+     3. To successfully deploy the model, select a single TESLA T4 GPU.
 
 
 ## ML Pipeline
