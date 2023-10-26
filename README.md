@@ -105,7 +105,15 @@ This Milestone encomposed:
 2. ML pipeline 
 
 ## Model Deployment
-In this part we deploy our model on  Google Cloud's Vertex AI using a custom Docker container. It encompassed building a Docker image, pushing it to Google Cloud Registry (GCR), and deploying the model using the pushed image. Below we provide a step-by-step guide of the process we followed: 
+In this part we deploy our model on  Google Cloud's Vertex AI using a custom Docker container. It encompassed building a Docker image, pushing it to Google Cloud Registry (GCR), and deploying the model using the pushed image. 
+
+For deployment, we have the following files:
+
+- **app.py**: Sets up a Flask application for generating images from text input using a Diffusion Model, offering a text-to-image synthesis API.
+- **Dockerfile**: Used to build the image for model deployment.
+- **requirements.txt**: Lists the necessary packages to run `app.py`.
+
+Below we provide a step-by-step guide of the process we followed: 
 
 ### Prerequisites:
    - **Google Cloud SDK**: Install the Google Cloud SDK on your local machine.
