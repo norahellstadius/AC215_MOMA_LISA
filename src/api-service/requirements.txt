@@ -1,0 +1,6 @@
+uvicorn
+fastapi
+pandas
+google-cloud-storage
+python-multipart
+google-cloud-aiplatform
