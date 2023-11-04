@@ -37,7 +37,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose port of API service
-EXPOSE 8080
+EXPOSE 9000
 
 # Switch to the new user
 USER app

@@ -7,8 +7,8 @@ set -e
 export IMAGE_NAME="api_service"
 export BASE_DIR=$(pwd)
 export SECRETS_DIR=$(pwd)/../../secrets/
-export PERSISTENT_DIR=$(pwd)/../../persistent-folder/
-#export GCS_BUCKET_NAME="mushroom-app-models"
+export PERSISTENT_DIR=$(pwd)/../../persistent/
+# export GCS_BUCKET_NAME="models" #CHANGE!!!!
 
 # Build the image based on the Dockerfile
 #docker build -t $IMAGE_NAME -f Dockerfile .
@@ -22,6 +22,5 @@ docker run --rm --name $IMAGE_NAME -ti \
 -v "$PERSISTENT_DIR":/persistent \
 -p 9000:9000 \
 -e DEV=1 \
--e GOOGLE_APPLICATION_CREDENTIALS=/secrets/ml-workflow.json \
-#-e GCS_BUCKET_NAME=$GCS_BUCKET_NAME \
+-e GOOGLE_APPLICATION_CREDENTIALS=/secrets/data-service-account.json \
 $IMAGE_NAME

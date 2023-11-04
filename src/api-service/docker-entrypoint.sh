@@ -4,11 +4,11 @@ echo "Container is running!!!"
 
 # this will run the api/service.py file with the instantiated app FastAPI
 uvicorn_server() {
-    uvicorn api.service:app --host 127.0.0.1 --port 8080 --log-level debug --reload --reload-dir api/ "$@"
+    uvicorn api.service:app --host 0.0.0.0 --port 9000 --log-level debug --reload --reload-dir api/ "$@"
 }
 
 uvicorn_server_production() {
-    pipenv run uvicorn api.service:app --host 127.0.0.1 --port 8080 --lifespan on
+    pipenv run uvicorn api.service:app --host 0.0.0.0 --port 9000 --lifespan on
 }
 
 export -f uvicorn_server

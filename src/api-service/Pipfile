@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+uvicorn = "*"
+fastapi = "*"
+pandas = "*"
+google-cloud-storage = "*"
+python-multipart = "*"
+google-cloud-aiplatform = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"

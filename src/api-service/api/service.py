@@ -23,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.on_event("startup")
 async def startup():
     print("Startup tasks")
@@ -35,28 +34,6 @@ async def startup():
 async def get_index():
     return {"message": "Welcome to the API Service"}
 
-
-# @app.get("/experiments")
-# def experiments_fetch():
-#     # Fetch experiments
-#     df = pd.read_csv("/persistent/experiments/experiments.csv")
-
-#     df["id"] = df.index
-#     df = df.fillna("")
-
-#     return df.to_dict("records")
-
-
-# @app.get("/best_model")
-# async def get_best_model():
-#     model.check_model_change()
-#     if model.best_model is None:
-#         return {"message": "No model available to serve"}
-#     else:
-#         return {
-#             "message": "Current model being served:" + model.best_model["model_name"],
-#             "model_details": model.best_model,
-#         }
 
 
 # @app.post("/predict")
