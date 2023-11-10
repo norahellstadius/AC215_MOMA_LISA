@@ -17,14 +17,39 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   background-image: url('/w3images/profile_girl.jpg');
   min-height: 100%;
 }
+/* Control image size */
+.image-container img {
+  width: 100%;
+  height: auto;
+}
+
+/* Display images horizontally */
+.image-container {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto; /* Enable horizontal scrolling if necessary */
+}
 </style>
 </head>
 <body>
 
-<!-- Sidebar with image -->
-<nav class="w3-sidebar w3-hide-medium w3-hide-small" style="width:40%">
-  <div class="bgimg"></div>
+<!-- Sidebar with gif displayed -->
+<nav class="w3-sidebar w3-hide-medium w3-hide-small" style="width: 40%">
+  <img src="images/temp_gif.gif" alt="Temporary GIF" width="1200" height="1100">
 </nav>
+
+<script>
+  function submitPrompts() {
+    // Retrieve the values of the text prompts
+    var prompt1Value = document.getElementById('prompt1').value;
+    var prompt2Value = document.getElementById('prompt2').value;
+
+    // You can perform further actions with the prompts, such as sending them to a server or processing them in JavaScript
+    // For now, let's just log the values to the console
+    console.log('Text Prompt 1:', prompt1Value);
+    console.log('Text Prompt 2:', prompt2Value);
+  }
+</script>
 
 <!-- Hidden Sidebar (reveals when clicked on menu icon)-->
 <nav class="w3-sidebar w3-black w3-animate-right w3-xxlarge" style="display:none;padding-top:150px;right:0;z-index:2" id="mySidebar">
@@ -33,7 +58,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   </a>
   <div class="w3-bar-block w3-center">
     <a href="#" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Home</a>
-    <a href="#portfolio" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Portfolio</a>
+    <a href="#gallery" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">GIF Gallery</a>
     <a href="#about" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">About</a>
     <a href="#contact" class="w3-bar-item w3-button w3-text-grey w3-hover-black" onclick="closeNav()">Contact</a>
   </div>
@@ -47,38 +72,57 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
   <!-- Header -->
   <header class="w3-container w3-center" style="padding:128px 16px" id="home">
-    <h1 class="w3-jumbo"><b>Jane Doe</b></h1>
-    <p>Photographer and Web Designer.</p>
-    <img src="/w3images/profile_girl.jpg" class="w3-image w3-hide-large w3-hide-small w3-round" style="display:block;width:60%;margin:auto;">
-    <img src="/w3images/profile_girl.jpg" class="w3-image w3-hide-large w3-hide-medium w3-round" width="1000" height="1333">
-    <button class="w3-button w3-light-grey w3-padding-large w3-margin-top">
-      <i class="fa fa-download"></i> Download Resume
-    </button>
+    <h1 class="w3-jumbo"><b>MoMA Lisa</b></h1>
   </header>
 
-  <!-- Portfolio Section -->
-  <div class="w3-padding-32 w3-content" id="portfolio">
-    <h2 class="w3-text-grey">My Portfolio</h2>
+  <hr>
+
+  <!-- Text prompts -->
+  <h1 style="font-weight: bold; font-size: 3.5em; margin-bottom: 10px;">Walk in the latent space between:</h1>
+
+  <div style="margin-bottom: 80px;"></div>
+
+  <div style="text-align: center;">
+    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+
+      <div style="text-align: center; margin-right: 300px;">
+        <label for="prompt1" style="display: block; margin-bottom: 5px;">Object 1</label>
+        <input type="text" id="prompt1" placeholder="eg. a battleship" style="font-style: italic; padding: 10px; width: 250px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em;">
+      </div>
+
+      <div style="text-align: center;">
+        <label for="prompt2" style="display: block; margin-bottom: 5px;">Object 2</label>
+        <input type="text" id="prompt2" placeholder="eg. a lemon" style="font-style: italic; padding: 10px; width: 250px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em;">
+      </div>
+
+    </div>
+
+    <div style="margin-bottom: 100px;"></div>
+
+    <button onclick="submitPrompts()" style="margin-top: 10px; font-size: 1.2em;">Submit</button>
+  </div>
+
+  <!-- Gallery Section -->
+  <div class="w3-padding-32 w3-content" id="gallery">
+    <h2 class="w3-text-grey">GIF Gallery</h2>
     <hr class="w3-opacity">
 
     <!-- Grid for photos -->
-    <div class="w3-row-padding" style="margin:0 -16px">
-      <div class="w3-half">
-        <img src="/w3images/wedding.jpg" style="width:100%">
-        <img src="/w3images/rocks.jpg" style="width:100%">
-        <img src="/w3images/sailboat.jpg" style="width:100%">
+    <div class="w3-row-padding" style="margin: 0 -16px;">
+      <div class="w3-container">
+        <!-- Common class for styling images -->
+        <div class="image-container">
+          <img src="images/example_4.jpeg" style="width:30%; object-fit: cover;">
+          <img src="images/example_2.jpeg" style="width:30%; object-fit: cover;">
+          <img src="images/example_3.jpeg" style="width:30%; object-fit: cover;">
+          <img src="images/example_2.jpeg" style="width:30%; object-fit: cover;">
+          <img src="images/example_4.jpeg" style="width:30%; object-fit: cover;">
+        </div>
       </div>
-
-      <div class="w3-half">
-        <img src="/w3images/underwater.jpg" style="width:100%">
-        <img src="/w3images/chef.jpg" style="width:100%">
-        <img src="/w3images/wedding.jpg" style="width:100%">
-        <img src="/w3images/p6.jpg" style="width:100%">
-      </div>
-    <!-- End photo grid -->
     </div>
-  <!-- End Portfolio Section -->
+    <!-- End photo grid -->
   </div>
+  <!-- End Gallery Section -->
 
   <!-- About Section -->
   <div class="w3-content w3-justify w3-text-grey w3-padding-32" id="about">
