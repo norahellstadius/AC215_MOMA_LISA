@@ -104,12 +104,12 @@ The solution architecture for our application is spit between process, execution
 subsections are described in the diagram below, and the entire flow diagram linking the subsections depicted in the diagram after. 
 
 <figure>
-    <img src="./imgs/solution_architecture.png" height="200" />
+    <img src="./imgs/solution_architecture.png" height="500" />
     <figcaption>MoMA Lisa Solution Architecture SubSections </figcaption>
 </figure>
 
 <figure>
-    <img src="./imgs/solution_architecture_pipeline.png" height="200" />
+    <img src="./imgs/solution_architecture_pipeline.png" height="500" />
     <figcaption>MoMA Lisa Solution Architecture Flow Diagram</figcaption>
 </figure>
 
@@ -125,7 +125,7 @@ on GCE to host a single instance with all the needed containers running on it.
 The technical architecture, and the interactions between the components and containers are depicted in the diagram below.
 
 <figure>
-    <img src="./imgs/technical_architecture.png" height="200" />
+    <img src="./imgs/technical_architecture.png" height="500" />
     <figcaption>MoMA Lisa Technical Architecture </figcaption>
 </figure>
 
