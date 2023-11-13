@@ -114,3 +114,19 @@ subsections are described in the diagram below, and the entire flow diagram link
 </figure>
 
 **Technical Architecture:**
+The technical architecture provides a high level view from development to deployment, illustrating the interactions
+between components and containers. It provides the blueprint of the system, helping to understand how the system will work. 
+
+For source control, we will use GitHub to keep track of our code & the changes to it. We will use Vertex AI & GCP for model deployment, 
+and GCR to host the needed container images. GCS buckets will be used to store the outputted gifs. GCE persistent volume
+will be used to store any files that need to be persisted when container images are updated. We will use a virtual machine instance
+on GCE to host a single instance with all the needed containers running on it. 
+
+The technical architecture, and the interactions between the components and containers are depicted in the diagram below.
+
+<figure>
+    <img src="./imgs/technical_architecture.png" height="200" />
+    <figcaption>MoMA Lisa Technical Architecture </figcaption>
+</figure>
+
+
