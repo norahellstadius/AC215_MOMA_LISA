@@ -41,7 +41,7 @@ def make_prediction_vertexai(instance, bucket_name = "saved_predictions"):
     # Get the endpoint
     # Endpoint format: endpoint_name="projects/{PROJECT_NUMBER}/locations/us-central1/endpoints/{ENDPOINT_ID}"
     endpoint = aiplatform.Endpoint(
-        "projects/580339194016/locations/us-east4/endpoints/5529408791713415168"
+        "projects/580339194016/locations/us-central1/endpoints/7732031848334753792"
     )
 
     response = endpoint.predict(instances=instance)
@@ -58,6 +58,7 @@ def make_prediction_vertexai(instance, bucket_name = "saved_predictions"):
         print(f"Image {i} saved to bucket {bucket_name}")
 
     create_gifs(bucket_name, folder_name="images", gif_filename="test.gif")
+
 
     
 
