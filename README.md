@@ -141,3 +141,17 @@ has a GIF gallery, where users can view previously generated gifs and gain inspi
 discussing the project, link to our source code, and the team members. 
 
 INCLUDE SCREENSHOTS OF WEBSITE
+
+
+### Ansible
+Ansible is a tool that allows us to automate the deployment of our application. The following commands are used to deploy our application:
+1. Build the deployment container: `sh docker-shell.sh`
+2. Build & push docker containers to GCR (if you haven't already): `ansible-playbook deploy-docker-images.yml -i inventory.yml`
+3. Create a VM instance in GCP: `ansible-playbook deploy-create-instance.yml -i inventory.yml --extra-vars cluster_state=present`
+4. Provision the VM instance: `ansible-playbook deploy-provision-instance.yml -i inventory.yml`
+- note: check that the VM instance on GCP external IP matches the one in inventory.yml
+5. Setup the containers: `ansible-playbook deploy-setup-containers.yml -i inventory.yml`
+6. Check that containers are running by SSH into instance & running `sudo docker container ls` or `sudo docker container logs api-service -f`
+7. Deploy the webserver: `ansible-playbook deploy-setup-webserver.yml -i inventory.yml`
+8. Visit the website: `http://<external_ip>`
+9. Delete the VM instance: `ansible-playbook deploy-create-instance.yml -i inventory.yml --extra-vars cluster_state=absent`
