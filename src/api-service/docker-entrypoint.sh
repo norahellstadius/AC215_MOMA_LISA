@@ -26,3 +26,6 @@ if [ "${DEV}" = 1 ]; then
 else
   uvicorn_server_production
 fi
+
+#need this for api service to run
+uvicorn_server

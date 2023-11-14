@@ -50,4 +50,4 @@ async def get_index():
 async def predict(q: Annotated[list[str] | None, Query()] = None):
     instance = [{"sample_key": q}]
     model.make_prediction_vertexai(instance)
-    return instance
+    return instance 
