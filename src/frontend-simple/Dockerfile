@@ -5,7 +5,7 @@ RUN set -ex; \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends curl openssl && \
-    npm install -g http-server && \
+    npm install -g http-server google-auth-library && \
     useradd -ms /bin/bash app -d /home/app -G sudo -u 2000 -p "$(openssl passwd -1 Passw0rd)" && \
     mkdir -p /app && \
     chown app:app /app

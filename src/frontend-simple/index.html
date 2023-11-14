@@ -36,11 +36,30 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
 <!-- Sidebar with gif displayed -->
 <nav class="w3-sidebar w3-hide-medium w3-hide-small" style="width: 40%">
-  <img src="images/model_demo.gif" alt="Temporary GIF" width="1200" height="1100">
+  <img src="images/model_demo.gif" id="gifImage" alt="Temporary GIF" width="1200" height="1100">
 </nav>
 
+<!-- <script>
+  // document.addEventListener('DOMContentLoaded', fetchAndDisplayGif);
+
+async function fetchAndDisplayGIF() {
+  const apiUrl = 'http://localhost:9000/get_gif/';
+    try {
+      const response = await fetch(apiUrl);
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+
+      const gifImage = document.getElementById('gifImage');
+      gifImage.src = imageUrl;
+    } catch (error) {
+      console.error('Error fetching GIF:', error);
+    }
+  }
+</script> -->
+
+
 <script>
-  function submitPrompts() {
+  async function submitPrompts() {
     // Retrieve the values of the text prompts
     var prompt1Value = document.getElementById('prompt1').value;
     var prompt2Value = document.getElementById('prompt2').value;
@@ -55,13 +74,24 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     var post_input_text1 = "moma art work of " + prompt1Value;
     var post_input_text2 = "moma art work of " + prompt2Value;
     console.log(post_input_text1); 
-    console.log(post_input_text2); 
-    
-    axios.post("http://localhost:9000/predict/", null, {params: {word1: post_input_text1, word2: post_input_text2}}).then(function (response) {
-      console.log(response);
-      // // Display the results
-      //   prediction_label.innerHTML = prediction_results;
-    });
+    console.log(post_input_text2);
+    // null, {params: {word1: post_input_text1, word2: post_input_text2}}
+    // axios.post("http://localhost:9000/predict/?word1=cat&word2=dog”").then(function (response) {
+    //   console.log(response.data);
+    //   var folder_name = response.data;
+
+    // });
+    const apiUrl = "http://localhost:9000/predict/?word1=" + post_input_text1 + "&word2=" + post_input_text2;
+      try {
+        const response = await fetch(apiUrl);
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+
+        const gifImage = document.getElementById('gifImage');
+        gifImage.src = imageUrl;
+      } catch (error) {
+        console.error('Error fetching GIF:', error);
+      }
 
   }
 </script>
