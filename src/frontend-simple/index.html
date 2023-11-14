@@ -46,8 +46,26 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 
     // You can perform further actions with the prompts, such as sending them to a server or processing them in JavaScript
     // For now, let's just log the values to the console
+    
     console.log('Text Prompt 1:', prompt1Value);
     console.log('Text Prompt 2:', prompt2Value);
+    // prediction_label.innerHTML = "";
+
+    var post_input_text1 = "moma" + prompt1Value;
+    var post_input_text2 = "moma" + prompt2Value;
+    
+    const data = {
+    q: [post_input_text1, post_input_text2],
+    };
+    
+    axios.post('http://0.0.0.0:9000/predict/', data).then(function (response) {
+      var prediction_results = response.data;
+      console.log(prediction_results);
+
+      // // Display the results
+      //   prediction_label.innerHTML = prediction_results;
+    });
+
   }
 </script>
 
