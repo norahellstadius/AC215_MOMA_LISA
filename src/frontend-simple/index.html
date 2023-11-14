@@ -30,6 +30,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   overflow-x: auto; /* Enable horizontal scrolling if necessary */
 }
 </style>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
 
@@ -51,17 +52,13 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
     console.log('Text Prompt 2:', prompt2Value);
     // prediction_label.innerHTML = "";
 
-    var post_input_text1 = "moma" + prompt1Value;
-    var post_input_text2 = "moma" + prompt2Value;
+    var post_input_text1 = "moma art work of " + prompt1Value;
+    var post_input_text2 = "moma art work of " + prompt2Value;
+    console.log(post_input_text1); 
+    console.log(post_input_text2); 
     
-    const data = {
-    q: [post_input_text1, post_input_text2],
-    };
-    
-    axios.post('http://0.0.0.0:9000/predict/', data).then(function (response) {
-      var prediction_results = response.data;
-      console.log(prediction_results);
-
+    axios.post("http://localhost:9000/predict/", null, {params: {word1: post_input_text1, word2: post_input_text2}}).then(function (response) {
+      console.log(response);
       // // Display the results
       //   prediction_label.innerHTML = prediction_results;
     });

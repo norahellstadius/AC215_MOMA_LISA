@@ -20,6 +20,7 @@ docker build -t $IMAGE_NAME -f Dockerfile .
 # -p 8080:8080 $IMAGE_NAME \
 # --network momalisa-app $IMAGE_NAME
 
-docker run --rm --name $IMAGE_NAME -d \
+docker run --rm --name $IMAGE_NAME -it \
 -v "$BASE_DIR":/app \
--p 8080:8080 --network momalisa-app $IMAGE_NAME
+-p 8080:8080 \
+--network=momalisa-app $IMAGE_NAME

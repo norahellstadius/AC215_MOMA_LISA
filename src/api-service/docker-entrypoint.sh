@@ -22,10 +22,7 @@ The following commands are available:
 "
 
 if [ "${DEV}" = 1 ]; then
-  pipenv shell
+  uvicorn_server
 else
   uvicorn_server_production
 fi
-
-#need this for api service to run
-uvicorn_server

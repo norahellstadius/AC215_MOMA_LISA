@@ -16,12 +16,12 @@ export PERSISTENT_DIR=$(pwd)/../../persistent/
 docker build -t $IMAGE_NAME --platform=linux/arm64/v8 -f Dockerfile .
 
 # Run the container
-docker run --rm --name $IMAGE_NAME -d \
+docker run --rm --name $IMAGE_NAME -it \
 -v "$BASE_DIR":/app \
 -v "$SECRETS_DIR":/secrets \
 -v "$PERSISTENT_DIR":/persistent \
+-p 9000:9000 \
 -e DEV=1 \
 -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/data-service-account.json \
-$IMAGE_NAME \
--p 9000:9000 network momalisa-app $IMAGE_NAME
-docker logs 
+--network=momalisa-app $IMAGE_NAME \
+

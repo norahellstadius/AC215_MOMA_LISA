@@ -47,7 +47,13 @@ async def get_index():
 #     return "checkbuckets"
 
 @app.post("/predict/")
-async def predict(q: Annotated[list[str] | None, Query()] = None):
-    instance = [{"sample_key": q}]
-    model.make_prediction_vertexai(instance)
+async def predict(word1: str = None, word2: str = None):
+    instance = [{"sample_key": [word1, word2]}]
+    #model.make_prediction_vertexai(instance)
     return instance 
+
+
+# @app.post("/predict/")
+# async def read_items(q: Annotated[list[str] | None, Query()] = None):
+#     query_items = {"q": q}
+#     return query_items
