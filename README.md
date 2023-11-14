@@ -94,7 +94,7 @@ The `preprocess_data` bucket contained the processed images, with their correspo
 
 ## AC215 - Milestone 5 - MOMA Lisa
 
-This Milestone encomposed:
+This Milestone encompassed:
 1. Application Design Document
 2. APIs & Frontend Implementation
 
@@ -129,4 +129,15 @@ The technical architecture, and the interactions between the components and cont
     <figcaption>MoMA Lisa Technical Architecture </figcaption>
 </figure>
 
+### APIs & Frontend Implementation
+**APIs:**
+ADD A DESCRIPTION OF THE APIs WE HAVE
 
+**Frontend:**
+The frontend we have created allows a user to input two objects, from which a gif will be generated that captures the 
+latent space walk. The outputted gif can be downloaded from the website. The user's input is processed, and then passed 
+to the model for prediction. The outputted gif is saved to GCS buckets, and then displayed to the user. Our website additionally
+has a GIF gallery, where users can view previously generated gifs and gain inspiration. Lastly it has a small section
+discussing the project, link to our source code, and the team members. 
+
+INCLUDE SCREENSHOTS OF WEBSITE
