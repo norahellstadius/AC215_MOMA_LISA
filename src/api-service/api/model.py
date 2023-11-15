@@ -1,6 +1,8 @@
 import os
 import json
 import base64
+import random
+from datetime import datetime
 import numpy as np
 from PIL import Image
 from io import BytesIO
@@ -41,7 +43,7 @@ def make_prediction_vertexai(instance, bucket_name = "saved_predictions"):
     # Get the endpoint
     # Endpoint format: endpoint_name="projects/{PROJECT_NUMBER}/locations/us-central1/endpoints/{ENDPOINT_ID}"
     endpoint = aiplatform.Endpoint(
-        "projects/580339194016/locations/us-central1/endpoints/7732031848334753792"
+        "projects/580339194016/locations/us-central1/endpoints/7613812358116278272"
     )
 
     response = endpoint.predict(instances=instance)
@@ -50,14 +52,22 @@ def make_prediction_vertexai(instance, bucket_name = "saved_predictions"):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
 
+    # generate random id number to store prediction
+    current_date = datetime.now().strftime("%Y%m%d%H%M%S")
+    random_number = random.randint(100000, 999999)
+    id_num = f"{current_date}{random_number}"
+    unique_folder_name = f"results_{id_num}"
+
     for i, pred in enumerate(predictions):
         image_data = base64.b64decode(pred)
-        blob = bucket.blob(f'images/image_{i}.png')
+        blob = bucket.blob(f'{unique_folder_name}/image_{i}.png')
         # TODO: change name to be unique
         blob.upload_from_string(image_data, content_type='image/png')
         print(f"Image {i} saved to bucket {bucket_name}")
 
-    create_gifs(bucket_name, folder_name="images", gif_filename="test.gif")
+    create_gifs(bucket_name, folder_name=unique_folder_name, gif_filename="test.gif")
+
+    return unique_folder_name
 
 
     

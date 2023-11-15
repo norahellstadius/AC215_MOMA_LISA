@@ -4,11 +4,14 @@ import asyncio
 # from api.tracker import TrackerService
 import pandas as pd
 import os
+from io import BytesIO
 from fastapi import File
 from tempfile import TemporaryDirectory
 from api import model
 from typing import Annotated
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, UploadFile
+from fastapi.responses import StreamingResponse
+from google.cloud import storage
 
 
 
@@ -46,14 +49,23 @@ async def get_index():
 
 #     return "checkbuckets"
 
-@app.post("/predict/")
+@app.get("/predict/")
 async def predict(word1: str = None, word2: str = None):
     instance = [{"sample_key": [word1, word2]}]
-    #model.make_prediction_vertexai(instance)
-    return instance 
+    folder_name = model.make_prediction_vertexai(instance)
+    storage_client = storage.Client()
+    bucket = storage_client.bucket("saved_predictions")
+    gif_blob = bucket.blob(f"{folder_name}/test.gif")
+    gif_bytes = gif_blob.download_as_bytes()
 
+    return StreamingResponse(iter([gif_bytes]), media_type='image/gif')
 
-# @app.post("/predict/")
-# async def read_items(q: Annotated[list[str] | None, Query()] = None):
-#     query_items = {"q": q}
-#     return query_items
+# @app.get('/get_gif/{folder_name}', status_code=200)
+# async def upload_file(folder_name: str):
+#     #get gif from buckets 
+#     storage_client = storage.Client()
+#     bucket = storage_client.bucket("saved_predictions")
+#     gif_blob = bucket.blob(folder_name + "/test.gif")
+#     gif_bytes = gif_blob.download_as_bytes()
+
+#     return StreamingResponse(gif_bytes, media_type='image/gif')
