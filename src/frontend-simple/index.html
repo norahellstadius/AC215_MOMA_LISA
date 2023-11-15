@@ -29,6 +29,30 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   flex-direction: row;
   overflow-x: auto; /* Enable horizontal scrolling if necessary */
 }
+/* Define the styles for the loading animation */
+.loading-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 10vh;
+      display: None;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+.loading-spinner {
+  border: 8px solid #f3f3f3; /* Light gray border */
+  border-top: 8px solid #3498db; /* Blue border for animation */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite; /* Rotate animation */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
@@ -83,17 +107,31 @@ async function fetchAndDisplayGIF() {
     // });
     const apiUrl = "http://localhost:9000/predict/?word1=" + post_input_text1 + "&word2=" + post_input_text2;
       try {
+        var loadingDiv = document.getElementById('loadingDiv');
+        var loadingSpinner = document.getElementById('loadingSpinner');
+        // Update the text content
+        var currentDisplay = loadingSpinner.style.display;
+        // Toggle between 'none' and 'block'
+        loadingSpinner.style.display = (currentDisplay === 'none') ? 'block' : 'none';
+        loadingDiv.innerText = 'AI is sprinkling some magic dust... 🚀';
+        
         const response = await fetch(apiUrl);
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
 
         const gifImage = document.getElementById('gifImage');
         gifImage.src = imageUrl;
-      } catch (error) {
+        loadingDiv.innerText = 'Done ✅';
+        var currentDisplay = loadingSpinner.style.display;
+        // Toggle between 'none' and 'block'
+        loadingSpinner.style.display = (currentDisplay === 'none') ? 'block' : 'none';
+    }
+      catch (error) {
         console.error('Error fetching GIF:', error);
       }
 
-  }
+    }
+
 </script>
 
 <!-- Hidden Sidebar (reveals when clicked on menu icon)-->
@@ -148,6 +186,12 @@ async function fetchAndDisplayGIF() {
     <div style="margin-bottom: 100px;"></div>
 
     <button onclick="submitPrompts()" style="margin-top: 10px; font-size: 1.2em;">Submit</button>
+    <div id="loadingDiv"></div>
+    <div class="loading-container" id="loadingSpinner" style="display: none;">
+      <!-- Loading spinner element -->
+      <div class="loading-spinner"></div>
+    </div>
+    
   </div>
 
   <!-- Gallery Section -->
