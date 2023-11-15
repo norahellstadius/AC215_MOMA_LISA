@@ -16,5 +16,5 @@ EXPOSE 8080
 USER app
 WORKDIR /app
 
-ENTRYPOINT ["/bin/bash"]
-# ENTRYPOINT ["http-server"]
+#ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["http-server"]

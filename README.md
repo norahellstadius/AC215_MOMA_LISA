@@ -150,8 +150,11 @@ Ansible is a tool that allows us to automate the deployment of our application. 
 3. Create a VM instance in GCP: `ansible-playbook deploy-create-instance.yml -i inventory.yml --extra-vars cluster_state=present`
 4. Provision the VM instance: `ansible-playbook deploy-provision-instance.yml -i inventory.yml`
 - note: check that the VM instance on GCP external IP matches the one in inventory.yml
-5. Setup the containers: `ansible-playbook deploy-setup-containers.yml -i inventory.yml`
+5. Set up the containers: `ansible-playbook deploy-setup-containers.yml -i inventory.yml`
 6. Check that containers are running by SSH into instance & running `sudo docker container ls` or `sudo docker container logs api-service -f`
 7. Deploy the webserver: `ansible-playbook deploy-setup-webserver.yml -i inventory.yml`
 8. Visit the website: `http://<external_ip>`
 9. Delete the VM instance: `ansible-playbook deploy-create-instance.yml -i inventory.yml --extra-vars cluster_state=absent`
+
+These commands take care of creating the different docker images, uploading them to GCR, creating a VM instance, 
+establishing a docker network, and running the docker containers. 
