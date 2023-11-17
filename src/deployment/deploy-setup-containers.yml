@@ -38,14 +38,15 @@
         var: tag
     - name: Create frontend container
       docker_container:
-        name: "frontend"
+        name: "frontend-simple"
         image: "gcr.io/{{ gcp_project }}/momalisa-frontend-simple:{{ tag.stdout}}"
         state: started
         recreate: yes
         pull: yes
         restart: yes
+        entrypoint: "http-server"
         published_ports:
-          - 8080:80
+          - 3000:8080
         networks:
           - name: "{{docker_network_name}}"
 

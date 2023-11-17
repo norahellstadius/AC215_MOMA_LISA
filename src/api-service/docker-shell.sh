@@ -16,7 +16,7 @@ docker build -t $IMAGE_NAME -f Dockerfile .
 #docker build -t $IMAGE_NAME --platform=linux/arm64/v8 -f Dockerfile .
 
 # Run the container
-docker run --rm --name $IMAGE_NAME -it \
+docker run --rm --name $IMAGE_NAME -d \
 -v "$BASE_DIR":/app \
 -v "$SECRETS_DIR":/secrets \
 -v "$PERSISTENT_DIR":/persistent \
@@ -24,4 +24,3 @@ docker run --rm --name $IMAGE_NAME -it \
 -e DEV=1 \
 -e GOOGLE_APPLICATION_CREDENTIALS=/secrets/data-service-account.json \
 --network=momalisa-app $IMAGE_NAME \
-
