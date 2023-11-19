@@ -1,0 +1,159 @@
+# PIPELINE DEFINITION
+# Name: prediction-pipeline
+# Inputs:
+#    instance: list [Default: [{'sample_key': ['dog', 'cat']}]]
+components:
+  comp-create-gifs:
+    executorLabel: exec-create-gifs
+    inputDefinitions:
+      parameters:
+        bucket_name:
+          parameterType: STRING
+        folder_name:
+          parameterType: STRING
+        gif_filename:
+          parameterType: STRING
+  comp-predict:
+    executorLabel: exec-predict
+    inputDefinitions:
+      parameters:
+        bucket_name:
+          parameterType: STRING
+        instance:
+          parameterType: LIST
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: LIST
+deploymentSpec:
+  executors:
+    exec-create-gifs:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - create_gifs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \ 'Pillow' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef create_gifs(bucket_name: str, folder_name: str, gif_filename:\
+          \ str):\n    from google.cloud import storage\n    from PIL import Image\n\
+          \    from io import BytesIO\n\n    storage_client = storage.Client()\n \
+          \   bucket = storage_client.bucket(bucket_name)\n    blobs = bucket.list_blobs(prefix=folder_name+\"\
+          /\")\n\n    # TODO: change to not save locally before uploading to bucket\n\
+          \    images = []\n    for blob in blobs:\n        image_bytes = blob.download_as_bytes()\n\
+          \        image = Image.open(BytesIO(image_bytes))\n        images.append(image)\n\
+          \n    with BytesIO() as output:\n        images[0].save(\n            output,\n\
+          \            format=\"GIF\",\n            save_all=True,\n            append_images=images[1:],\n\
+          \            duration=1000 // 36,\n            loop=0,\n        )\n    \
+          \    output.seek(0)\n        blob = bucket.blob(f\"{folder_name}/{gif_filename}\"\
+          )\n        blob.upload_from_file(output, content_type=\"image/gif\")\n\n\
+          \    # images[0].save(\n    #     gif_filename,\n    #     save_all=True,\n\
+          \    #     append_images=images[1:],\n    #     duration=1000 // 36,\n \
+          \   #     loop=0,\n    # )\n    #\n    # blob = bucket.blob(f\"{folder_name}/{gif_filename}\"\
+          )\n    # blob.upload_from_filename(gif_filename)\n\n"
+        image: python:3.10
+    exec-predict:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - predict
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-aiplatform'\
+          \ 'google-cloud-storage' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef predict(instance: list, bucket_name: str)->list:\n    from google.cloud\
+          \ import aiplatform as aip\n    from google.cloud import storage\n    import\
+          \ base64\n\n    endpoint = aip.Endpoint(\"projects/580339194016/locations/us-east4/endpoints/5529408791713415168\"\
+          \n                            )\n    response = endpoint.predict(instances=instance)\n\
+          \    predictions = response.predictions[0]\n\n    storage_client = storage.Client()\n\
+          \    bucket = storage_client.bucket(bucket_name)\n\n    for i, pred in enumerate(predictions):\n\
+          \        image_data = base64.b64decode(pred)\n        blob = bucket.blob(f'images/image_{i}.png')\n\
+          \        # TODO: change name to be unique\n        blob.upload_from_string(image_data,\
+          \ content_type='image/png')\n        print(f\"Image {i} saved to bucket\
+          \ {bucket_name}\")\n\n    # return predictions\n\n"
+        image: python:3.10
+pipelineInfo:
+  name: prediction-pipeline
+root:
+  dag:
+    tasks:
+      create-gifs:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-create-gifs
+        inputs:
+          parameters:
+            bucket_name:
+              runtimeValue:
+                constant: saved_predictions
+            folder_name:
+              runtimeValue:
+                constant: images
+            gif_filename:
+              runtimeValue:
+                constant: test.gif
+        taskInfo:
+          name: create-gifs
+      predict:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-predict
+        inputs:
+          parameters:
+            bucket_name:
+              runtimeValue:
+                constant: saved_predictions
+            instance:
+              componentInputParameter: instance
+        taskInfo:
+          name: predict
+  inputDefinitions:
+    parameters:
+      instance:
+        defaultValue:
+        - sample_key:
+          - dog
+          - cat
+        isOptional: true
+        parameterType: LIST
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.3.0
