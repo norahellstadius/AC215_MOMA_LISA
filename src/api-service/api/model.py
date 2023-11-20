@@ -43,7 +43,7 @@ def make_prediction_vertexai(instance, bucket_name = "saved_predictions"):
     # Get the endpoint
     # Endpoint format: endpoint_name="projects/{PROJECT_NUMBER}/locations/us-central1/endpoints/{ENDPOINT_ID}"
     endpoint = aiplatform.Endpoint(
-        "projects/580339194016/locations/us-central1/endpoints/7094983607294361600"
+        "projects/580339194016/locations/us-east1/endpoints/636582048110215168"
     )
 
     print("GIF uploaded to buckets")
