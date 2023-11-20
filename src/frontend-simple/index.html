@@ -109,9 +109,7 @@ async function fetchAndDisplayGIF() {
       try {
         var loadingDiv = document.getElementById('loadingDiv');
         var loadingSpinner = document.getElementById('loadingSpinner');
-        // Update the text content
         var currentDisplay = loadingSpinner.style.display;
-        // Toggle between 'none' and 'block'
         loadingSpinner.style.display = (currentDisplay === 'none') ? 'block' : 'none';
         loadingDiv.innerText = 'AI is sprinkling some magic dust... 🚀';
         
@@ -125,6 +123,7 @@ async function fetchAndDisplayGIF() {
         var currentDisplay = loadingSpinner.style.display;
         // Toggle between 'none' and 'block'
         loadingSpinner.style.display = (currentDisplay === 'none') ? 'block' : 'none';
+        loadingDiv.innerText = 'Done';
     }
       catch (error) {
         console.error('Error fetching GIF:', error);
@@ -186,6 +185,8 @@ async function fetchAndDisplayGIF() {
     <div style="margin-bottom: 100px;"></div>
 
     <button onclick="submitPrompts()" style="margin-top: 10px; font-size: 1.2em;">Submit</button>
+    <button onclick="download_test()" style="margin-top: 20px; font-size: 1.2em;">Download</button>
+
     <div id="loadingDiv"></div>
     <div class="loading-container" id="loadingSpinner" style="display: none;">
       <!-- Loading spinner element -->
@@ -278,5 +279,6 @@ function closeNav() {
 }
 </script>
 
+<script src="download.js"></script>
 </body>
 </html>
