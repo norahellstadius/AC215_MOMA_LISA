@@ -99,14 +99,33 @@ async function fetchAndDisplayGIF() {
     var post_input_text2 = "moma art work of " + prompt2Value;
     console.log(post_input_text1); 
     console.log(post_input_text2);
-    // null, {params: {word1: post_input_text1, word2: post_input_text2}}
-    // axios.post("http://localhost:9000/predict/?word1=cat&word2=dog”").then(function (response) {
-    //   console.log(response.data);
-    //   var folder_name = response.data;
 
+    // const apiUrl = "http://localhost:9000/api/predict/?word1=" + post_input_text1 + "&word2=" + post_input_text2;
+    // axios.get(apiUrl).then(function (response) {
+    //   console.log(response.data);
     // });
-    const apiUrl = "http://localhost:9000/predict/?word1=" + post_input_text1 + "&word2=" + post_input_text2;
+
+    // app.get("http://localhost:9000/predict/?word1=cat&word2=dog", async (req, res) => {
+    //   try {
+    //     // Your existing code for handling predictions
+
+    //     // Send the appropriate CORS headers
+    //     res.header('Access-Control-Allow-Origin', '*'); // Allow any origin (replace with your actual allowed origins in production)
+    //     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    //     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
+    //     // Send the response
+    //     res.send(/* Your response data */);
+    //   } catch (error) {
+    //     console.error('Error handling prediction:', error);
+    //     res.status(500).send('Internal Server Error');
+    //   }
+    // });
+
+
+    const apiUrl = "api/predict/?word1=" + post_input_text1 + "&word2=" + post_input_text2;
       try {
+        console.log("helllo"); 
         var loadingDiv = document.getElementById('loadingDiv');
         var loadingSpinner = document.getElementById('loadingSpinner');
         var currentDisplay = loadingSpinner.style.display;
@@ -114,6 +133,7 @@ async function fetchAndDisplayGIF() {
         loadingDiv.innerText = 'AI is sprinkling some magic dust... 🚀';
         
         const response = await fetch(apiUrl);
+
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
 
