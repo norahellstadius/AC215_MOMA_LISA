@@ -63,24 +63,6 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <img src="images/model_demo.gif" id="gifImage" alt="Temporary GIF" width="1200" height="1100">
 </nav>
 
-<!-- <script>
-  // document.addEventListener('DOMContentLoaded', fetchAndDisplayGif);
-
-async function fetchAndDisplayGIF() {
-  const apiUrl = 'http://localhost:9000/get_gif/';
-    try {
-      const response = await fetch(apiUrl);
-      const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob);
-
-      const gifImage = document.getElementById('gifImage');
-      gifImage.src = imageUrl;
-    } catch (error) {
-      console.error('Error fetching GIF:', error);
-    }
-  }
-</script> -->
-
 
 <script>
   async function submitPrompts() {
@@ -152,6 +134,18 @@ async function fetchAndDisplayGIF() {
     }
 
 </script>
+
+<script>
+  function download_test() {
+      var a = document.createElement('a');
+      const gifImage = document.getElementById('gifImage');
+      a.href = gifImage.src;
+      a.download = "test.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
 
 <!-- Hidden Sidebar (reveals when clicked on menu icon)-->
 <nav class="w3-sidebar w3-black w3-animate-right w3-xxlarge" style="display:none;padding-top:150px;right:0;z-index:2" id="mySidebar">
@@ -299,6 +293,5 @@ function closeNav() {
 }
 </script>
 
-<script src="download.js"></script>
 </body>
 </html>
