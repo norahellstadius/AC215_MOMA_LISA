@@ -13,11 +13,6 @@ from fastapi import FastAPI, Query, UploadFile
 from fastapi.responses import StreamingResponse
 from google.cloud import storage
 
-
-
-# Initialize Tracker Service
-# tracker_service = TrackerService()
-
 # Setup FastAPI app
 app = FastAPI(title="API Server", description="API Server", version="v1")
 
@@ -33,21 +28,11 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     print("Startup tasks")
-    # Start the tracker service
-    # asyncio.create_task(tracker_service.track())
 
 # Routes
 @app.get("/")
 async def get_index():
     return {"message": "Welcome to the API Service"}
-
-
-# @app.post("/predict")
-# async def predict(instance: list):
-#     print("predict instance:", instance)
-#     model.make_prediction_vertexai(instance)
-
-#     return "checkbuckets"
 
 @app.get("/predict/")
 async def predict(word1: str = None, word2: str = None):
@@ -59,13 +44,3 @@ async def predict(word1: str = None, word2: str = None):
     gif_bytes = gif_blob.download_as_bytes()
 
     return StreamingResponse(iter([gif_bytes]), media_type='image/gif')
-
-# @app.get('/get_gif/{folder_name}', status_code=200)
-# async def upload_file(folder_name: str):
-#     #get gif from buckets 
-#     storage_client = storage.Client()
-#     bucket = storage_client.bucket("saved_predictions")
-#     gif_blob = bucket.blob(folder_name + "/test.gif")
-#     gif_bytes = gif_blob.download_as_bytes()
-
-#     return StreamingResponse(gif_bytes, media_type='image/gif')
