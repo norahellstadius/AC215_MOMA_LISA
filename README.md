@@ -89,7 +89,7 @@ We have focused on providing a code structure description for the section of wor
 * `src/deployment/inventory.yml` : This file is used to specify the VM instance, and the containers that will be run on it.
 
 ### Bucket structure 
-The following is our current structue of files on Google Cloud Storage.
+The following is our current structure of files on Google Cloud Storage.
 
     ├── saved_predictions
     │   └── instance_id
@@ -154,8 +154,6 @@ The technical architecture, and the interactions between the components and cont
 **API Service/Backend:**
 The backend API service connects to our deployed model which is hosted on Vertex AI. This allows us to make predictions, 
 generating images along the latent space walk. When we call the model, the predictions are also written to a GCP bucket.
-
-Certainly! Here's an improved version of the section:
 
 **Deploying the Model on Vertex AI**
 Before launching the website, the model stored on Vertex AI must be deployed. These steps must be completed:  
