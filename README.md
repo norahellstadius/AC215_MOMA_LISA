@@ -182,6 +182,11 @@ to the model for prediction. The outputted gif is saved to GCS buckets, and then
 has a GIF gallery, where users can view previously generated gifs and gain inspiration. Lastly it has a small section
 discussing the project, link to our source code, and the team members. 
 
+<figure>
+    <img src="./imgs/first_page.png" height="500" />
+    <figcaption>Part of website where user inputs prompts and can generate a GIF</figcaption>
+</figure>
+
 INCLUDE SCREENSHOTS OF WEBSITE
 
 ### Ansible
