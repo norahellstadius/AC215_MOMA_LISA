@@ -202,9 +202,10 @@ These commands take care of creating the different docker images, uploading them
 establishing a docker network, running the docker containers and creating a webserver managed by NGINX.
 
 ### Future Work
-We note that currently we are only generate 4 points in the latent space walk between the two user inputted points.
-The reason for this is that any higher number of points leads to a timeout when we're calling our model, as the model takes significant
-amount of time to generate an image for each point as it is a heavy model. We would like to improve this, in order to generate smoother gifs.
-We would like to explore deploying multiple models in parallel, and then splitting the predictions across these models so 
-that neither time out, and also reduce latency. We plan to explore this in our final milestone of the project, when we focus
+We note that currently we are only generate 4 points in the latent space walk between the two user inputted points. The result of this
+is that the latent space walk is coarse, and does not smoothly transition from one object to the next. The reason we have set the value is so low, is that 
+for any higher number of points there is a timeout when calling our model. The reason for this is that a diffusion model is a large model, 
+that takes considerable time to predict. We would like to improve this in order to generate smoother gifs. We would like to explore 
+deploying multiple models in parallel, and then splitting the predictions across these models so 
+that neither time out, also reducing latency. We plan to explore this in our final milestone of the project, when we focus
 on scalability.
