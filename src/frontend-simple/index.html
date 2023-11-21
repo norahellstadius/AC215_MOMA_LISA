@@ -113,7 +113,7 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
       var a = document.createElement('a');
       const gifImage = document.getElementById('gifImage');
       a.href = gifImage.src;
-      a.download = "test.png";
+      a.download = "generated_gif.gif";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

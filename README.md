@@ -176,11 +176,9 @@ Before launching the website, the model stored on Vertex AI must be deployed. Th
 Now, the model is linked to the correct endpoint, and you can proceed with launching the website.
 
 **Frontend:**
-The frontend we have created allows a user to input two objects, from which a gif will be generated that captures the 
-latent space walk. The outputted gif can be downloaded from the website. The user's input is processed, and then passed 
-to the model for prediction. The outputted gif is saved to GCS buckets, and then displayed to the user. Our website additionally
-has a GIF gallery, where users can view previously generated gifs and gain inspiration. Lastly it has a small section
-discussing the project, link to our source code, and the team members. 
+The frontend we have created allows a user to input two objects, from which a gif will be generated that captures the latent space walk. The generated gif is placed on the left side of the webise and can be downloaded from the website. 
+
+Our website additionally has a GIF gallery, where users can view previously generated gifs and gain inspiration. Lastly it has a small section discussing the project, link to our source code, and the team members. Please refer to the image below to see how the user interacts with the website to generate and download a gif. In addition a video is provided below for a tour of the webiste. 
 
 <figure>
     <img src="./imgs/first_page.png" height="500" />
