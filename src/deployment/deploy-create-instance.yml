@@ -11,7 +11,7 @@
       gce_net:
         name: default
         fwname: "default-allow-http"
-        allowed: "tcp:80"
+        allowed: "tcp:80,tcp:9000"
         state: "present"
         src_range: "0.0.0.0/0"
         project_id: "{{ gcp_project }}"

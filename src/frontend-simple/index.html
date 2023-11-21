@@ -81,7 +81,7 @@ async function fetchAndDisplayGIF() {
     //   var folder_name = response.data;
 
     // });
-    const apiUrl = "http://localhost:9000/predict/?word1=" + post_input_text1 + "&word2=" + post_input_text2;
+    const apiUrl = "api/predict/?word1=" + post_input_text1 + "&word2=" + post_input_text2;
       try {
         const response = await fetch(apiUrl);
         const blob = await response.blob();
@@ -120,9 +120,6 @@ async function fetchAndDisplayGIF() {
   <header class="w3-container w3-center" style="padding:128px 16px" id="home">
     <h1 class="w3-jumbo"><b>MoMA Lisa</b></h1>
   </header>
-
-
-  
 
   <!-- Text prompts -->
   <div class="w3-padding-32 w3-content" id="generate">

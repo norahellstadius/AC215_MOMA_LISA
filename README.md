@@ -131,7 +131,7 @@ The technical architecture, and the interactions between the components and cont
 
 ### APIs & Frontend Implementation
 **APIs:**
-ADD A DESCRIPTION OF THE APIs WE HAVE
+The backend API service connects to our deployed model which is hosted on Vertex AI. This
 
 **Frontend:**
 The frontend we have created allows a user to input two objects, from which a gif will be generated that captures the 
@@ -141,7 +141,6 @@ has a GIF gallery, where users can view previously generated gifs and gain inspi
 discussing the project, link to our source code, and the team members. 
 
 INCLUDE SCREENSHOTS OF WEBSITE
-
 
 ### Ansible
 Ansible is a tool that allows us to automate the deployment of our application. The following commands are used to deploy our application:
@@ -154,7 +153,14 @@ Ansible is a tool that allows us to automate the deployment of our application. 
 6. Check that containers are running by SSH into instance & running `sudo docker container ls` or `sudo docker container logs api-service -f`
 7. Deploy the webserver: `ansible-playbook deploy-setup-webserver.yml -i inventory.yml`
 8. Visit the website: `http://<external_ip>`
-9. Delete the VM instance: `ansible-playbook deploy-create-instance.yml -i inventory.yml --extra-vars cluster_state=absent`
+
+To delete the VM instance, run the following command: `ansible-playbook deploy-create-instance.yml -i inventory.yml --extra-vars cluster_state=absent`
 
 These commands take care of creating the different docker images, uploading them to GCR, creating a VM instance, 
-establishing a docker network, and running the docker containers. 
+establishing a docker network, running the docker containers and creating a webserver managed by NGINX.
+
+TODO:
+- Add description of APIs
+- Include screenshots of website
+- Add some more stuff to ansible section
+- Change the number of points used in latent space walk
