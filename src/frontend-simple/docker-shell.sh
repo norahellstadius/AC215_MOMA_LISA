@@ -12,7 +12,7 @@ export BASE_DIR=$(pwd)
 # Build the image based on the Dockerfile
 docker build -t $IMAGE_NAME -f Dockerfile .
 
-# Run the container
+
 # --v: Attach a filesystem volume to the container
 # -p: Publish a container's port(s) to the host (host_port: container_port) (source: https://dockerlabs.collabnix.com/intermediate/networking/ExposingContainerPort.html)
 # docker run --rm --name $IMAGE_NAME -it \
@@ -22,5 +22,5 @@ docker build -t $IMAGE_NAME -f Dockerfile .
 
 docker run --rm --name $IMAGE_NAME -it \
 -v "$BASE_DIR":/app \
--p 3000:80 \
+-p 3000:8080 \
 --network=momalisa-app $IMAGE_NAME

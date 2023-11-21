@@ -130,8 +130,11 @@ The technical architecture, and the interactions between the components and cont
 </figure>
 
 ### APIs & Frontend Implementation
-**APIs:**
-The backend API service connects to our deployed model which is hosted on Vertex AI. This
+**API Service/Backend:**
+The backend API service connects to our deployed model which is hosted on Vertex AI. This allows us to make predictions, 
+generating images along the latent space walk. When we call the model, the predictions are also written to a GCP bucket.
+
+SECTION ON HOW TO DEPLOY MODEL (vertex AI, edit model.py)
 
 **Frontend:**
 The frontend we have created allows a user to input two objects, from which a gif will be generated that captures the 
@@ -152,15 +155,22 @@ Ansible is a tool that allows us to automate the deployment of our application. 
 5. Set up the containers: `ansible-playbook deploy-setup-containers.yml -i inventory.yml`
 6. Check that containers are running by SSH into instance & running `sudo docker container ls` or `sudo docker container logs api-service -f`
 7. Deploy the webserver: `ansible-playbook deploy-setup-webserver.yml -i inventory.yml`
-8. Visit the website: `http://<external_ip>`
+8. Visit the website by using the external IP address of the VM: `http://<external_ip>`
 
 To delete the VM instance, run the following command: `ansible-playbook deploy-create-instance.yml -i inventory.yml --extra-vars cluster_state=absent`
 
 These commands take care of creating the different docker images, uploading them to GCR, creating a VM instance, 
 establishing a docker network, running the docker containers and creating a webserver managed by NGINX.
 
+
+### Future Work
+We note that currently we are only generate 4 points in the latent space walk between the two user inputted points.
+The reason for this is that any higher number of points leads to a timeout when we're calling our model, as the model takes signficant
+amount of time to generate an image for each point as it is a heavy model. We would like to improve this, in order to generate smoother gifs.
+We would like to explore deploying multiple models in parallel, and then splitting the predictions across these models so 
+that neither time out, and also reduce latency. We plan to explore this in our final milestone of the project, when we focus
+on scalability. 
+
 TODO:
-- Add description of APIs
 - Include screenshots of website
 - Add some more stuff to ansible section
-- Change the number of points used in latent space walk

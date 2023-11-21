@@ -29,8 +29,32 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   flex-direction: row;
   overflow-x: auto; /* Enable horizontal scrolling if necessary */
 }
+/* Define the styles for the loading animation */
+.loading-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 10vh;
+      display: None;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+.loading-spinner {
+  border: 8px solid #f3f3f3; /* Light gray border */
+  border-top: 8px solid #3498db; /* Blue border for animation */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite; /* Rotate animation */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
 </head>
 <body>
 
@@ -39,24 +63,6 @@ body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
   <img src="images/model_demo.gif" id="gifImage" alt="Temporary GIF" width="1200" height="1100">
 </nav>
 
-<!-- <script>
-  // document.addEventListener('DOMContentLoaded', fetchAndDisplayGif);
-
-async function fetchAndDisplayGIF() {
-  const apiUrl = 'http://localhost:9000/get_gif/';
-    try {
-      const response = await fetch(apiUrl);
-      const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob);
-
-      const gifImage = document.getElementById('gifImage');
-      gifImage.src = imageUrl;
-    } catch (error) {
-      console.error('Error fetching GIF:', error);
-    }
-  }
-</script> -->
-
 
 <script>
   async function submitPrompts() {
@@ -64,37 +70,55 @@ async function fetchAndDisplayGIF() {
     var prompt1Value = document.getElementById('prompt1').value;
     var prompt2Value = document.getElementById('prompt2').value;
 
-    // You can perform further actions with the prompts, such as sending them to a server or processing them in JavaScript
-    // For now, let's just log the values to the console
-    
     console.log('Text Prompt 1:', prompt1Value);
     console.log('Text Prompt 2:', prompt2Value);
-    // prediction_label.innerHTML = "";
 
     var post_input_text1 = "moma art work of " + prompt1Value;
     var post_input_text2 = "moma art work of " + prompt2Value;
     console.log(post_input_text1); 
     console.log(post_input_text2);
-    // null, {params: {word1: post_input_text1, word2: post_input_text2}}
-    // axios.post("http://localhost:9000/predict/?word1=cat&word2=dog”").then(function (response) {
-    //   console.log(response.data);
-    //   var folder_name = response.data;
 
-    // });
     const apiUrl = "api/predict/?word1=" + post_input_text1 + "&word2=" + post_input_text2;
       try {
+        console.log("helllo"); 
+        var loadingDiv = document.getElementById('loadingDiv');
+        var loadingSpinner = document.getElementById('loadingSpinner');
+        var currentDisplay = loadingSpinner.style.display;
+        loadingSpinner.style.display = (currentDisplay === 'none') ? 'block' : 'none';
+        loadingDiv.innerText = 'AI is sprinkling some magic dust... 🚀';
+        
         const response = await fetch(apiUrl);
+
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
 
         const gifImage = document.getElementById('gifImage');
         gifImage.src = imageUrl;
-      } catch (error) {
+        loadingDiv.innerText = 'Done ✅';
+        var currentDisplay = loadingSpinner.style.display;
+        // Toggle between 'none' and 'block'
+        loadingSpinner.style.display = (currentDisplay === 'none') ? 'block' : 'none';
+        loadingDiv.innerText = 'Done';
+    }
+      catch (error) {
         console.error('Error fetching GIF:', error);
       }
 
-  }
+    }
+
 </script>
+
+<script>
+  function download_test() {
+      var a = document.createElement('a');
+      const gifImage = document.getElementById('gifImage');
+      a.href = gifImage.src;
+      a.download = "test.png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
 
 <!-- Hidden Sidebar (reveals when clicked on menu icon)-->
 <nav class="w3-sidebar w3-black w3-animate-right w3-xxlarge" style="display:none;padding-top:150px;right:0;z-index:2" id="mySidebar">
@@ -145,6 +169,14 @@ async function fetchAndDisplayGIF() {
     <div style="margin-bottom: 100px;"></div>
 
     <button onclick="submitPrompts()" style="margin-top: 10px; font-size: 1.2em;">Submit</button>
+    <button onclick="download_test()" style="margin-top: 20px; font-size: 1.2em;">Download</button>
+
+    <div id="loadingDiv"></div>
+    <div class="loading-container" id="loadingSpinner" style="display: none;">
+      <!-- Loading spinner element -->
+      <div class="loading-spinner"></div>
+    </div>
+    
   </div>
 
   <!-- Gallery Section -->

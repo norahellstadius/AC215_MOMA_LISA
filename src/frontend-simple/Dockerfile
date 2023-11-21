@@ -15,8 +15,7 @@ EXPOSE 3000
 # Switch to the new user
 USER app
 WORKDIR /app
-
 ADD --chown=app:app . /app
 
-#ENTRYPOINT ["http-server"]
 ENTRYPOINT ["/bin/bash"]
+#ENTRYPOINT ["http-server"]
