@@ -187,7 +187,9 @@ discussing the project, link to our source code, and the team members.
     <figcaption>Part of website where user inputs prompts and can generate a GIF</figcaption>
 </figure>
 
-INCLUDE SCREENSHOTS OF WEBSITE
+
+### Video 
+Check out a demo of our project [here](https://youtu.be/PUSkKIgtY2E)
 
 ### Ansible
 Ansible is a tool that allows us to automate the deployment of our application. The following commands are used to deploy our application:
