@@ -16,7 +16,6 @@ def create_gifs(bucket_name: str, folder_name: str, gif_filename: str):
     bucket = storage_client.bucket(bucket_name)
     blobs = bucket.list_blobs(prefix=folder_name+"/")
 
-    # TODO: change to not save locally before uploading to bucket
     images = []
     for blob in blobs:
         image_bytes = blob.download_as_bytes()
@@ -48,11 +47,9 @@ def make_prediction_vertexai(instance, bucket_name = "saved_predictions"):
 
     print("GIF uploaded to buckets")
 
-
     response = endpoint.predict(instances=instance)
     predictions = response.predictions[0]
     print("Done predicting")
-
 
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
@@ -66,7 +63,6 @@ def make_prediction_vertexai(instance, bucket_name = "saved_predictions"):
     for i, pred in enumerate(predictions):
         image_data = base64.b64decode(pred)
         blob = bucket.blob(f'{unique_folder_name}/image_{i}.png')
-        # TODO: change name to be unique
         blob.upload_from_string(image_data, content_type='image/png')
         print(f"Image {i} saved to bucket {bucket_name}")
 

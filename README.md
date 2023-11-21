@@ -17,58 +17,79 @@ ideas and not applicable to our current idea: `train`, `preprocess`, `scrape`, `
     ├── README.md
     ├── data.dvc
     ├── imgs
-    │   ├── ...
+    │   └── ...
     ├── reports
-    │   ├── milestone2.md
-    │   ├── milestone3.md
-    │   └── milestone4.md
+    │   └── ...
     └── src
         ├── docker-compose.yml
         ├── preprocess
-        │   ├── Dockerfile
-        │   ├── preprocess.py
-        │   └── requirements.txt
+        │   └── ...
         ├── scrape
+        │   └── ...
+        ├── secrets
+        │   └── ...
+        ├── train
+        │   └── ...
+        ├── deploy_model
+        │   └── ...
+        ├── workflow
+        │   └── ...
+        ├── frontend-simple
+        │   ├── imgs
+        │   ├── docker-shell.sh
+        │   ├── Dockerfile
+        │   └── index.html
+        ├── api-service
+        │   ├── api
+        │   │   ├── model.py
+        │   │   └── service.py
+        │   ├── docker-entrypoint.sh
+        │   ├── docker-shell.sh
         │   ├── Dockerfile
         │   ├── Pipfile
-        │   ├── Pipfile.lock
-        │   └── scraper.py
-        ├── secrets
-        │   ├── data-service-account.json
-        │   └── wandb_api_key.json
-        ├── train
-            ├── Dockerfile
-            ├── fetch_train_data.py
-            ├── requirements.txt
-            ├── train.sh
-            └── training_setup.sh
-        ├── deploy
-            ├── app.py
-            ├── Dockerfile
-            └── requirements.txt
-        └── workflow
-            ├── Dockerfile
-            ├── pipeline.py
-            ├── pipeline.yaml
-            └── requirements.txt
+        │   └── requirements.txt
+        └── deployment
+            └── nginx-conf/nginx
+                └── nginx.conf
+            ├── deploy-create-instance.yml
+            ├── deploy-docker-images.yml
+            ├── deploy-provision-instance.yml
+            ├── deploy-setup-containers.yml
+            ├── deploy-setup-webserver.yml
+            ├── docker-entrypoint.sh 
+            ├── docker-shell.sh
+            ├── Dockerfil
+            └── inventory.yml
 
 ### Code structure
-* `src/preprocess/preprocess.py` : Fetches MOMA images from 'moma_scrape' GCP bucket, converts the images to png formate and annotates them by generate a text caption and uploads to 'preprocess_data' bucket.
+We have focused on providing a code structure description for the section of work we have added this milestone.
 
-* `src/scrape/scraper.py` : Scrape MOMA collection of artworks currently on display and store jpeg files in 'moma_scrape' GCP bucket. 
+**Frontend:**
+* `src/frontend-simple/docker-shell.sh` : This script is used to build and launch the container for the frontend.
+* `src/frontend-simple/Dockerfile` : This file is used to specify the frontend container image.
+* `src/frontend-simple/index.html` : This file is the html file for the frontend. It contains the html code for the website.
 
-* `src/train/fetch_train_data.py` : Fetch training data from 'preprocess_data' bucket and store it for training. 
+**API Service/Backend:**
+* `src/api-service/api/model.py` : This file make predictions from the deployed model.
+* `src/api-service/api/service.py` : This file is used to create the API service, and connect to the deployed model and call the predict function.
+* `src/api-service/docker-entrypoint.sh` : This script is used to define the entrypoint for the backend container.
+* `src/api-service/docker-shell.sh` : This script is used to build and launch the container for the API service container.
+* `src/api-service/Dockerfile` : This file is used to specify the API service container image.
+* `src/api-service/Pipfile` and `src/api-service/requirements.txt` : These files are used to specify the dependencies for the API service.
 
-* `src/train/training_setup.sh` : Collect data and utils file for training. 
-
-* `src/train/train.sh` : Start the fine-tuning of Stable Diffusion, **requires** to first run `training_setup.sh`
-
-* `src/deploy/app.py` : Flask app to deploy model on Vertex AI.
-
-* `src/workflow/pipeline.py` : Create & run pipeline on Vertex AI.
+**Deployment:**
+* `src/deployment/deploy-create-instance.yml` : This file is used to create a VM instance on GCP.
+* `src/deployment/deploy-docker-images.yml` : This file is used to build and push the docker images to GCR for both the frontend and backend containers.
+* `src/deployment/deploy-provision-instance.yml` : This file is used to provision the VM instance.
+* `src/deployment/deploy-setup-containers.yml` : This file is used to set up the containers on the VM instance, pulling them from the container registry.
+* `src/deployment/deploy-setup-webserver.yml` : This file is used to set up the webserver on the VM instance, which uses nginx to connect the frontend & backend containers.
+* `src/deployment/docker-entrypoint.sh` : This script is used to define the entrypoint for the deployment container.
+* `src/deployment/docker-shell.sh` : This script is used to build and launch the container for the deployment container, from which the ansible playbooks can be called.
+* `src/deployment/Dockerfile` : This file is used to specify the deployment container image.
+* `src/deployment/inventory.yml` : This file is used to specify the VM instance, and the containers that will be run on it.
 
 ### Bucket structure 
-The following is our current structue of files on Google Cloud Storage.
+The following is our current structure of files on Google Cloud Storage.
 
     ├── saved_predictions
     │   └── instance_id
@@ -134,8 +155,6 @@ The technical architecture, and the interactions between the components and cont
 The backend API service connects to our deployed model which is hosted on Vertex AI. This allows us to make predictions, 
 generating images along the latent space walk. When we call the model, the predictions are also written to a GCP bucket.
 
-Certainly! Here's an improved version of the section:
-
 **Deploying the Model on Vertex AI**
 Before launching the website, the model stored on Vertex AI must be deployed. These steps must be completed:  
 1. Navigate to the Vertex AI on Google Cloud.
@@ -182,15 +201,10 @@ To delete the VM instance, run the following command: `ansible-playbook deploy-c
 These commands take care of creating the different docker images, uploading them to GCR, creating a VM instance, 
 establishing a docker network, running the docker containers and creating a webserver managed by NGINX.
 
-
 ### Future Work
 We note that currently we are only generate 4 points in the latent space walk between the two user inputted points.
-The reason for this is that any higher number of points leads to a timeout when we're calling our model, as the model takes signficant
+The reason for this is that any higher number of points leads to a timeout when we're calling our model, as the model takes significant
 amount of time to generate an image for each point as it is a heavy model. We would like to improve this, in order to generate smoother gifs.
 We would like to explore deploying multiple models in parallel, and then splitting the predictions across these models so 
 that neither time out, and also reduce latency. We plan to explore this in our final milestone of the project, when we focus
-on scalability. 
-
-TODO:
-- Include screenshots of website
-- Add some more stuff to ansible section
+on scalability.
