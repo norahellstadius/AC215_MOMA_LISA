@@ -134,7 +134,27 @@ The technical architecture, and the interactions between the components and cont
 The backend API service connects to our deployed model which is hosted on Vertex AI. This allows us to make predictions, 
 generating images along the latent space walk. When we call the model, the predictions are also written to a GCP bucket.
 
-SECTION ON HOW TO DEPLOY MODEL (vertex AI, edit model.py)
+Certainly! Here's an improved version of the section:
+
+**Deploying the Model on Vertex AI**
+Before launching the website, the model stored on Vertex AI must be deployed. These steps must be completed:  
+1. Navigate to the Vertex AI on Google Cloud.
+2. In the Model Registry, select the region as US-east1.
+3. Locate and click on the model named "diffusion-vertexai-4."
+4. Under the "Deploy and Test" tab, click on "Deploy to Endpoint."
+5. In the deployment configuration, choose "NVIDIA_TESLA_T4" as the accelerator type.
+6. After the model is successfully deployed, copy the provided ID number.
+7. Open the Python file named `model.py` found in `src/api-service/api`.
+8. Locate the following line of code in `model.py`:
+
+    ```python
+    endpoint = aiplatform.Endpoint(
+        "projects/580339194016/locations/us-east1/endpoints/{ID}"
+    )
+    ```
+
+9. Replace `{ID}` with the copied ID number from the deployed model.
+Now, the model is linked to the correct endpoint, and you can proceed with launching the website.
 
 **Frontend:**
 The frontend we have created allows a user to input two objects, from which a gif will be generated that captures the 
