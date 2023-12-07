@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars:
-    cluster_name: "momalisa-app-cluster"
+    cluster_name: "momalisa-app-cluster2"
     machine_type: "n2d-standard-2"
     machine_disk_size: 30
     initial_node_count: 2
@@ -131,32 +131,32 @@
       var: create_secret_op
     when: cluster_state == "present"
   
-  - name: "Create Deployment for Frontend"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Deployment
-        metadata:
-          name: frontend-simple
-          namespace: "{{cluster_name}}-namespace"
-        spec:
-          selector:
-            matchLabels:
-              run: frontend-simple
-          template:
-            metadata:
-              labels:
-                run: frontend-simple
-            spec:
-              containers:
-              - image: "gcr.io/{{ gcp_project }}/momalisa-frontend-simple:{{ tag.stdout}}"
-                imagePullPolicy: IfNotPresent
-                name: frontend-simple
-                ports:
-                - containerPort: 8080
-                  protocol: TCP
-    when: cluster_state == "present"
+#  - name: "Create Deployment for Frontend"
+#    k8s:
+#      state: present
+#      definition:
+#        apiVersion: v1
+#        kind: Deployment
+#        metadata:
+#          name: frontend-simple
+#          namespace: "{{cluster_name}}-namespace"
+#        spec:
+#          selector:
+#            matchLabels:
+#              run: frontend-simple
+#          template:
+#            metadata:
+#              labels:
+#                run: frontend-simple
+#            spec:
+#              containers:
+#              - image: "gcr.io/{{ gcp_project }}/momalisa-frontend-simple:{{ tag.stdout}}"
+#                imagePullPolicy: IfNotPresent
+#                name: frontend-simple
+#                ports:
+#                - containerPort: 8080
+#                  protocol: TCP
+#    when: cluster_state == "present"
 
   - name: "Create Deployment for API Service"
     k8s:
@@ -204,24 +204,24 @@
                     value: saved_predictions
     when: cluster_state == "present"
 
-  - name: "Create Service for Frontend"
-    k8s:
-      state: present
-      definition:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: frontend-simple
-          namespace: "{{cluster_name}}-namespace"
-        spec:
-          ports:
-          - port: 80
-            protocol: TCP
-            targetPort: 8080
-          selector:
-            run: frontend-simple
-          type: NodePort
-    when: cluster_state == "present"
+#  - name: "Create Service for Frontend"
+#    k8s:
+#      state: present
+#      definition:
+#        apiVersion: v1
+#        kind: Service
+#        metadata:
+#          name: frontend-simple
+#          namespace: "{{cluster_name}}-namespace"
+#        spec:
+#          ports:
+#          - port: 3000
+#            protocol: TCP
+#            targetPort: 8080
+#          selector:
+#            run: frontend-simple
+#          type: NodePort
+#    when: cluster_state == "present"
 
   - name: "Create Service for API Service"
     k8s:
@@ -280,19 +280,19 @@
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/ssl-redirect: "false"
-            nginx.org/rewrites: "serviceName=frontend rewrite=/;serviceName=api rewrite=/"
+            nginx.org/rewrites: "serviceName=api rewrite=/" #serviceName=frontend rewrite=/;
         spec:
           rules:
           - host: "{{ nginx_ingress_ip }}.sslip.io" # Host requires a domain and not just an IP
             http:
               paths:
-              - path: /
-                pathType: Prefix
-                backend:
-                  service:
-                    name: frontend-simple
-                    port:
-                      number: 8080
+#              - path: /
+#                pathType: Prefix
+#                backend:
+#                  service:
+#                    name: frontend-simple
+#                    port:
+#                      number: 8080
               - path: /api/
                 pathType: Prefix
                 backend:
