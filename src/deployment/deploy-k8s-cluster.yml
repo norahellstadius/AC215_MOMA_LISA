@@ -185,7 +185,7 @@
                   secret:
                     secretName: gcp-service-key
               containers:
-              - image: gcr.io/{{ gcp_project }}/momalisa-api-service:{{ tag.stdout}}
+              - image: "gcr.io/{{ gcp_project }}/momalisa-api-service:{{ tag.stdout}}"
                 imagePullPolicy: IfNotPresent
                 name: api-service
                 ports:
@@ -201,7 +201,7 @@
                   - name: GOOGLE_APPLICATION_CREDENTIALS
                     value: /secrets/gcp-service.json
                   - name: GCS_BUCKET_NAME
-                    value: mushroom-app-models
+                    value: saved_predictions
     when: cluster_state == "present"
 
   - name: "Create Service for Frontend"
@@ -215,7 +215,7 @@
           namespace: "{{cluster_name}}-namespace"
         spec:
           ports:
-          - port: 8080
+          - port: 80
             protocol: TCP
             targetPort: 8080
           selector:

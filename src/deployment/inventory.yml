@@ -7,8 +7,8 @@ all:
       gcp_auth_kind: "serviceaccount"
       gcp_scopes: "https://www.googleapis.com/auth/compute"
       gcp_project: "cookthis-400019"
-      gcp_region: "us-central1"
-      gcp_zone: "us-central1-a"
+      gcp_region: "us-east1"
+      gcp_zone: "us-east1-b"
       docker_network_name: "momalisa-app"
       persistent_disk_name: "momalisa-disk"
       persistent_disk_size: 50
