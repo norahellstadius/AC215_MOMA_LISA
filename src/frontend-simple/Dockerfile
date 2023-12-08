@@ -17,5 +17,5 @@ USER app
 WORKDIR /app
 ADD --chown=app:app . /app
 
-ENTRYPOINT ["/bin/bash"]
-#ENTRYPOINT ["http-server"]
+#ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["http-server", "-p", "3000"]

@@ -22,5 +22,5 @@ docker build -t $IMAGE_NAME -f Dockerfile .
 
 docker run --rm --name $IMAGE_NAME -it \
 -v "$BASE_DIR":/app \
--p 3000:8080 \
+-p 3000:3000 \
 --network=momalisa-app $IMAGE_NAME

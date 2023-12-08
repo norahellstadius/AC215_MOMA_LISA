@@ -46,7 +46,7 @@
         restart: yes
         entrypoint: "http-server"
         published_ports:
-          - 3000:8080
+          - 3000:3000
         networks:
           - name: "{{docker_network_name}}"
 
