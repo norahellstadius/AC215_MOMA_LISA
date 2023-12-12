@@ -1,6 +1,6 @@
 all:
     vars:
-      ansible_user: sa_114209670611615330945
+      ansible_user: nhallqvisthellstadius_g_harvard_
       ansible_ssh_private_key_file: "../../secrets/ssh-key-deployment"
       gcp_service_account_file: "../../secrets/deployment.json"
       gcp_service_account_email: "deployment@cookthis-400019.iam.gserviceaccount.com"
