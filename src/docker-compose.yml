@@ -5,7 +5,7 @@ services:
       - ./scrape:/scrape
       - ./secrets:/secrets
   preprocess:
-    image: preprocess:5.0
+    image: preprocess:1.0
     volumes:
       - ./preprocess:/preprocess
       - ./secrets:/secrets
