@@ -1,6 +1,14 @@
 # MOMA Lisa
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
+==============================
+### Presentation  Video
+* \<Link Here>
+
+### Blog Post Link
+*  \<Link Here>
+---
+
 **Project Description:**
 Our project takes a user's prompt for two points, and generates a continuous series MoMa artworks transitioning between them.
 We achieve this by transversing through the latent space, creating intermediate points between the two given points, from which we can decode 
@@ -53,6 +61,7 @@ ideas and not applicable to our current idea: `train`, `preprocess`, `scrape`, `
                 └── nginx.conf
             ├── deploy-create-instance.yml
             ├── deploy-docker-images.yml
+            ├── deploy-k8s-cluster.yml
             ├── deploy-provision-instance.yml
             ├── deploy-setup-containers.yml
             ├── deploy-setup-webserver.yml
@@ -80,6 +89,7 @@ We have focused on providing a code structure description for the section of wor
 **Deployment:**
 * `src/deployment/deploy-create-instance.yml` : This file is used to create a VM instance on GCP.
 * `src/deployment/deploy-docker-images.yml` : This file is used to build and push the docker images to GCR for both the frontend and backend containers.
+* `src/deployment/deploy-k8s-cluster.yml` : This file is used to deploy the k8s cluster.
 * `src/deployment/deploy-provision-instance.yml` : This file is used to provision the VM instance.
 * `src/deployment/deploy-setup-containers.yml` : This file is used to set up the containers on the VM instance, pulling them from the container registry.
 * `src/deployment/deploy-setup-webserver.yml` : This file is used to set up the webserver on the VM instance, which uses nginx to connect the frontend & backend containers.
@@ -112,11 +122,14 @@ The `preprocess_data` bucket contained the processed images, with their correspo
             ├── moma_1.png
             ├── ...
         
+---
 
 ## AC215 - Milestone 6 - MOMA Lisa
 
 ## Kubernetes Setup and Deployment
-For scaling purposes we set up Kubernetes. The following commands are used to deploy our application:
+For scaling purposes we set up Kubernetes. Kubernetes simplifies and automates the deployment, scaling, and management of containerized applications, providing a robust and scalable infrastructure orchestration solution
+
+The following commands are used to deploy our application:
 
 1. Build the deployment container: `sh docker-shell.sh`
 2. Create and deploy the cluster: `ansible-playbook deploy-k8s-cluster.yml -i inventory.yml --extra-vars cluster_state=present`
@@ -140,8 +153,8 @@ Check out these screenshots showcasing a successfully configured Kubernetes setu
     <figcaption>Workloads (containers) in running cluster </figcaption>
 </figure>
 
-Additionally, you can watch a video demonstration where we navigate to the website hosted on the Kubernetes cluster.
-INSERT VIDEO!!!
+Additionally, you can watch a video demonstration where we navigate to the website hosted on the Kubernetes cluster [here](https://www.youtube.com/watch?v=161SAMJLeeY).
+
 
 
 ## GitHub Actions
