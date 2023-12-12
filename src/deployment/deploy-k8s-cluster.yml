@@ -4,10 +4,10 @@
   gather_facts: false
 
   vars:
-    cluster_name: "momalisa-app-clusternew"
+    cluster_name: "momalisa-app-clusterlatest"
     machine_type: "n2d-standard-2"
     machine_disk_size: 30
-    initial_node_count: 2
+    initial_node_count: 1
 
   tasks:
   - name: "Create a GKE cluster"
@@ -138,21 +138,22 @@
         apiVersion: v1
         kind: Deployment
         metadata:
-          name: frontend-simple
+          name: frontend
           namespace: "{{cluster_name}}-namespace"
         spec:
           selector:
             matchLabels:
-              run: frontend-simple
+              run: frontend
           template:
             metadata:
               labels:
-                run: frontend-simple
+                run: frontend
             spec:
               containers:
               - image: "gcr.io/{{ gcp_project }}/momalisa-frontend-simple:{{ tag.stdout}}"
                 imagePullPolicy: IfNotPresent
-                name: frontend-simple
+                name: frontend
+                command: ["http-server", "-p", "3000"]
                 ports:
                 - containerPort: 3000
                   protocol: TCP
@@ -165,16 +166,16 @@
         apiVersion: v1
         kind: Deployment
         metadata:
-          name: api-service
+          name: api
           namespace: "{{cluster_name}}-namespace"
         spec:
           selector:
             matchLabels:
-              run: api-service
+              run: api
           template:
             metadata:
               labels:
-                run: api-service
+                run: api
             spec:
               volumes:
                 - name: persistent-vol
@@ -187,7 +188,7 @@
               containers:
               - image: "gcr.io/{{ gcp_project }}/momalisa-api-service:{{ tag.stdout}}"
                 imagePullPolicy: IfNotPresent
-                name: api-service
+                name: api
                 ports:
                 - containerPort: 9000
                   protocol: TCP
@@ -211,7 +212,7 @@
         apiVersion: v1
         kind: Service
         metadata:
-          name: frontend-simple
+          name: frontend
           namespace: "{{cluster_name}}-namespace"
         spec:
           ports:
@@ -219,7 +220,7 @@
             protocol: TCP
             targetPort: 3000
           selector:
-            run: frontend-simple
+            run: frontend
           type: NodePort
     when: cluster_state == "present"
 
@@ -230,7 +231,7 @@
         apiVersion: v1
         kind: Service
         metadata:
-          name: api-service
+          name: api
           namespace: "{{cluster_name}}-namespace"
         spec:
           ports:
@@ -238,7 +239,7 @@
             protocol: TCP
             targetPort: 9000
           selector:
-            run: api-service
+            run: api
           type: NodePort
     when: cluster_state == "present"
 
@@ -280,7 +281,7 @@
           annotations:
             kubernetes.io/ingress.class: "nginx"
             nginx.ingress.kubernetes.io/ssl-redirect: "false"
-            nginx.org/rewrites: "serviceName=api rewrite=/" #serviceName=frontend rewrite=/;
+            nginx.org/rewrites: "serviceName=frontend rewrite=/;serviceName=api rewrite=/"
         spec:
           rules:
           - host: "{{ nginx_ingress_ip }}.sslip.io" # Host requires a domain and not just an IP
@@ -290,14 +291,14 @@
                 pathType: Prefix
                 backend:
                   service:
-                    name: frontend-simple
+                    name: frontend
                     port:
                       number: 3000
               - path: /api/
                 pathType: Prefix
                 backend:
                   service:
-                    name: api-service
+                    name: api
                     port:
                       number: 9000
     when: cluster_state == "present"

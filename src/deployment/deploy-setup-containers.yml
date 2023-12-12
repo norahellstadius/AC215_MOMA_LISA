@@ -44,7 +44,7 @@
         recreate: yes
         pull: yes
         restart: yes
-        entrypoint: "http-server"
+        entrypoint: 'http-server -p 3000'
         published_ports:
           - 3000:3000
         networks:
