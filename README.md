@@ -11,11 +11,11 @@
 **Project Description:**
 Our project takes a user's prompt for two points, and generates a continuous series MoMa artworks transitioning between them.
 We achieve this by transversing through the latent space, creating intermediate points between the two given points, from which we can decode 
-and generate images from. The images are then used to produce a gif, which is displayed to the user.
+and generate images. The images are then used to produce a gif, which is displayed to the user.
 
 **Project Journey:**
-This is not the first topic we have investigated in this project. Previously, we were hoping to use image and generated caption pairs, to fine-tune a stable diffusion model on MoMA artworks. We set up severless training, that utilized images & captions stored in a GCP bucket with WandB used to track
-model training. However, we realized that the model was already to good and consequently we were unable to teach the model anything. For this reason, we decided to pivot to a different idea. We experimented with instead trying to learn specific lesser known artists styles. Unfortunately we realized that for any artist that had satisfactory set of artworks available, the model already knew the style, and again found ourselves unable to teach the model anything. Thus, we have switched to our current topic. It should be noted that the following folders of work in `src` are from previous project
+This is not the first topic we have investigated in this project. Previously, we used image and generated caption pairs to fine-tune a stable diffusion model on MoMA artworks. We set up severless training, that utilized images & captions stored in a GCP bucket with WandB used to track
+model training. However, Stable Diffusion was already to good and consequently we were unable to improve the model. For this reason, we pivotted to a different idea. We experimented with learning specific lesser known artists styles. Unfortunately any artist that had satisfactory set of artworks available, the model already knew the style.  Again f the model could not learn anything. Thus, we switched to our current topic. It should be noted that the following folders of work in `src` are from previous project
 ideas and not applicable to our current idea: `train`, `preprocess`, `scrape`, `data`. 
 
 ### Project organization 
@@ -70,35 +70,35 @@ ideas and not applicable to our current idea: `train`, `preprocess`, `scrape`, `
             └── inventory.yml
 
 ### Code structure
-We have focused on providing a code structure description for the section of work we have added this milestone.
+We provide a code structure description for the section of work of this milestone.
 
 **Frontend:**
-* `src/frontend-simple/docker-shell.sh` : This script is used to build and launch the container for the frontend.
-* `src/frontend-simple/Dockerfile` : This file is used to specify the frontend container image.
+* `src/frontend-simple/docker-shell.sh` : This script builds and launches the container for the frontend.
+* `src/frontend-simple/Dockerfile` : This file specifies the frontend container image.
 * `src/frontend-simple/index.html` : This file is the html file for the frontend. It contains the html code for the website.
 
 **API Service/Backend:**
-* `src/api-service/api/model.py` : This file make predictions from the deployed model.
-* `src/api-service/api/service.py` : This file is used to create the API service, and connect to the deployed model and call the predict function.
-* `src/api-service/docker-entrypoint.sh` : This script is used to define the entrypoint for the backend container.
-* `src/api-service/docker-shell.sh` : This script is used to build and launch the container for the API service container.
-* `src/api-service/Dockerfile` : This file is used to specify the API service container image.
-* `src/api-service/Pipfile` and `src/api-service/requirements.txt` : These files are used to specify the dependencies for the API service.
+* `src/api-service/api/model.py` : This file predicts from the deployed model.
+* `src/api-service/api/service.py` : This file creates the API service, and connect sto the deployed model to call the predict function.
+* `src/api-service/docker-entrypoint.sh` : This defines the entrypoint for the backend container.
+* `src/api-service/docker-shell.sh` : This script builds and launches the container for the API service container.
+* `src/api-service/Dockerfile` : This file specifies the API service container image.
+* `src/api-service/Pipfile` and `src/api-service/requirements.txt` : These files specify the dependencies for the API service.
 
 **Deployment:**
-* `src/deployment/deploy-create-instance.yml` : This file is used to create a VM instance on GCP.
-* `src/deployment/deploy-docker-images.yml` : This file is used to build and push the docker images to GCR for both the frontend and backend containers.
-* `src/deployment/deploy-k8s-cluster.yml` : This file is used to deploy the k8s cluster.
-* `src/deployment/deploy-provision-instance.yml` : This file is used to provision the VM instance.
-* `src/deployment/deploy-setup-containers.yml` : This file is used to set up the containers on the VM instance, pulling them from the container registry.
-* `src/deployment/deploy-setup-webserver.yml` : This file is used to set up the webserver on the VM instance, which uses nginx to connect the frontend & backend containers.
-* `src/deployment/docker-entrypoint.sh` : This script is used to define the entrypoint for the deployment container.
-* `src/deployment/docker-shell.sh` : This script is used to build and launch the container for the deployment container, from which the ansible playbooks can be called.
-* `src/deployment/Dockerfile` : This file is used to specify the deployment container image.
-* `src/deployment/inventory.yml` : This file is used to specify the VM instance, and the containers that will be run on it.
+* `src/deployment/deploy-create-instance.yml` : This file creates a VM instance on GCP.
+* `src/deployment/deploy-docker-images.yml` : This file builds and pushes the docker images to GCR for both the frontend and backend containers.
+* `src/deployment/deploy-k8s-cluster.yml` : This file deploys the k8s cluster.
+* `src/deployment/deploy-provision-instance.yml` : This file provisions the VM instance.
+* `src/deployment/deploy-setup-containers.yml` : This file sets up the containers on the VM instance, pulling them from the container registry.
+* `src/deployment/deploy-setup-webserver.yml` : This file sets up the webserver on the VM instance, which uses nginx to connect the frontend & backend containers.
+* `src/deployment/docker-entrypoint.sh` : This script defines the entrypoint for the deployment container.
+* `src/deployment/docker-shell.sh` : This script builds and launches the container for the deployment container, from which the ansible playbooks can be called.
+* `src/deployment/Dockerfile` : This file specifies the deployment container image.
+* `src/deployment/inventory.yml` : This file specifies the VM instance, and the containers that will be run on it.
 
 ### Bucket structure 
-The following is our current structure of files on Google Cloud Storage.
+This our structure of files on Google Cloud Storage.
 
     ├── saved_predictions
     │   └── instance_id
@@ -164,7 +164,7 @@ Before launching the website, the model stored on Vertex AI must be deployed. Th
 Now, the model is linked to the correct endpoint, and you can proceed with launching the website.
 
 **Frontend:**
-The frontend we have created allows a user to input two objects, from which a gif will be generated that captures the latent space walk. The generated gif is placed on the left side of the webise and can be downloaded from the website. 
+The frontend allows a user to input two objects, from which a gif will be generated that captures the latent space walk. The generated gif is placed on the left side of the webise and can be downloaded from the website. 
 
 Our website additionally has a GIF gallery, where users can view previously generated gifs and gain inspiration. Lastly it has a small section discussing the project, link to our source code, and the team members. Please refer to the image below to see how the user interacts with the website to generate and download a gif. In addition a video is provided below for a tour of the webiste. 
 
