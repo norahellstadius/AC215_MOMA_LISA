@@ -6,7 +6,7 @@
 * \<Link Here>
 
 ### Blog Post Link
-*  \<Link Here>
+*  [Blog Post](https://medium.com/@amidgley_80993/a27ca3ef0090)
 ---
 
 **Project Description:**
