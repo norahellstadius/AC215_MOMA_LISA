@@ -126,7 +126,7 @@ The `preprocess_data` bucket contained the processed images, with their correspo
 
 ## AC215 - Milestone 6 - MOMA Lisa
 
-### APIs & Frontend Implementation
+## APIs & Frontend Implementation
 **API Service/Backend:**
 The backend API service connects to our deployed model which is hosted on Vertex AI. This allows us to make predictions, 
 generating images along the latent space walk. When we call the model, the predictions are also written to a GCP bucket.
