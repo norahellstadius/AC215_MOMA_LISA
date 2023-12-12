@@ -126,6 +126,75 @@ The `preprocess_data` bucket contained the processed images, with their correspo
 
 ## AC215 - Milestone 6 - MOMA Lisa
 
+### APIs & Frontend Implementation
+**API Service/Backend:**
+The backend API service connects to our deployed model which is hosted on Vertex AI. This allows us to make predictions, 
+generating images along the latent space walk. When we call the model, the predictions are also written to a GCP bucket.
+
+To run the container locally, follow these simple steps:
+
+1. Open a terminal and navigate to the `src/api-service` directory.
+2. Run the following command:
+
+   ```bash
+   sh docker-shell.sh
+   ```
+
+3. Once the container is up and running, access the app locally by visiting [http://localhost:9000](http://localhost:3000) in your web browser.
+
+
+
+**Deploying the Model on Vertex AI**
+Before launching the website, the model stored on Vertex AI must be deployed. These steps must be completed:  
+1. Navigate to the Vertex AI on Google Cloud.
+2. In the Model Registry, select the region as US-east1.
+3. Locate and click on the model named "diffusion-vertexai-4."
+4. Under the "Deploy and Test" tab, click on "Deploy to Endpoint."
+5. In the deployment configuration, choose "NVIDIA_TESLA_T4" as the accelerator type.
+6. After the model is successfully deployed, copy the provided ID number.
+7. Open the Python file named `model.py` found in `src/api-service/api`.
+8. Locate the following line of code in `model.py`:
+
+    ```python
+    endpoint = aiplatform.Endpoint(
+        "projects/580339194016/locations/us-east1/endpoints/{ID}"
+    )
+    ```
+
+9. Replace `{ID}` with the copied ID number from the deployed model.
+Now, the model is linked to the correct endpoint, and you can proceed with launching the website.
+
+**Frontend:**
+The frontend we have created allows a user to input two objects, from which a gif will be generated that captures the latent space walk. The generated gif is placed on the left side of the webise and can be downloaded from the website. 
+
+Our website additionally has a GIF gallery, where users can view previously generated gifs and gain inspiration. Lastly it has a small section discussing the project, link to our source code, and the team members. Please refer to the image below to see how the user interacts with the website to generate and download a gif. In addition a video is provided below for a tour of the webiste. 
+
+To to view the website locally, follow these simple steps:
+
+1. Open a terminal and navigate to the `src/frontend-simple` directory.
+2. Run the following command:
+
+   ```bash
+   sh docker-shell.sh
+   ```
+
+3. Once the container is up and running, access the app locally by visiting [http://localhost:3000](http://localhost:3000) in your web browser.
+
+
+<figure>
+    <img src="./imgs/first_page.png" height="500" />
+    <figcaption>Part of website where user inputs prompts and can generate a GIF</figcaption>
+</figure>
+
+
+
+
+
+
+
+### Video 
+Check out a demo of our project [here](https://youtu.be/PUSkKIgtY2E)
+
 ## Kubernetes Setup and Deployment
 For scaling purposes we set up Kubernetes. Kubernetes simplifies and automates the deployment, scaling, and management of containerized applications, providing a robust and scalable infrastructure orchestration solution
 
