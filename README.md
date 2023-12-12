@@ -3,8 +3,7 @@
 
 ---
 ### Presentation  Video
-* \<Link Here>
-
+* [Video](https://www.youtube.com/watch?v=LmK48wLHlfA)
 ### Blog Post Link
 *  [Blog Post](https://medium.com/@amidgley_80993/a27ca3ef0090)
 ---
