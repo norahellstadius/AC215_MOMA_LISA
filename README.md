@@ -114,4 +114,42 @@ The `preprocess_data` bucket contained the processed images, with their correspo
         
 
 ## AC215 - Milestone 6 - MOMA Lisa
-"test actions12"
+
+## Kubernetes Setup and Deployment
+For scaling purposes we set up Kubernetes. The following commands are used to deploy our application:
+
+1. Build the deployment container: `sh docker-shell.sh`
+2. Create and deploy the cluster: `ansible-playbook deploy-k8s-cluster.yml -i inventory.yml --extra-vars cluster_state=present`
+3. Copy the `nginx_ingress_ip` from the terminal from the create cluster command
+4. Visit the website: `http://<INGRESS IP>.sslip.io`
+
+To delete the cluster, run the following command: `ansible-playbook deploy-k8s-cluster.yml -i inventory.yml --extra-vars cluster_state=absent`
+
+Check out these screenshots showcasing a successfully configured Kubernetes setup:
+
+## Kubernetes Cluster Screenshots
+
+<figure>
+    <img src="./imgs/cluster.jpeg" height="200" />
+    <figcaption>Running Cluster </figcaption>
+</figure>
+
+
+<figure>
+    <img src="./imgs/workloads.jpeg" height="200" />
+    <figcaption>Workloads (containers) in running cluster </figcaption>
+</figure>
+
+Additionally, you can watch a video demonstration where we navigate to the website hosted on the Kubernetes cluster.
+INSERT VIDEO!!!
+
+
+## GitHub Actions
+We implemented a CI/CD using GitHub Actions, such that we can trigger deployment using GitHub Events. The yaml file which sets up the workflow can be found in the folder .github/workflows.
+
+Our pipeline is simple, and does not require data collection nor data processing. Therefore the only Action we define is to setup the Kubernetes cluster with our app deployed. A brief description of the details of the action is listed below:
+
+- the workflow is triggered on a push event to the main branch.
+- the job is conditional on the commit message containing /run-deploy-app.
+- the workflow runs in Ubuntu, and checks out the repository code
+- builds the deployment container with the necessary GC credentials, and runs the script deploy-app.sh, which deploys the latest docker images for the frontend and api-service, and sets up the K8 clusters
