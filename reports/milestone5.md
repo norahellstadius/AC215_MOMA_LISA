@@ -214,3 +214,6 @@ that takes considerable time to predict. We would like to improve this in order 
 deploying multiple models in parallel, and then splitting the predictions across these models so 
 that neither time out, also reducing latency. We plan to explore this in our final milestone of the project, when we focus
 on scalability.
+
+
+

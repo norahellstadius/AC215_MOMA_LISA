@@ -10,12 +10,12 @@ RUN set -ex; \
     mkdir -p /app && \
     chown app:app /app
 
-EXPOSE 3000
+# EXPOSE 3000
 
 # Switch to the new user
 USER app
 WORKDIR /app
 ADD --chown=app:app . /app
 
-ENTRYPOINT ["/bin/bash"]
-#ENTRYPOINT ["http-server"]
+# ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["http-server", "-p", "3000"]
