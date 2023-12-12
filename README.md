@@ -1,7 +1,7 @@
 # MOMA Lisa
 ### Nora Hallqvist, Anna Midgley, Sebastian Weisshaar
 
-==============================
+---
 ### Presentation  Video
 * \<Link Here>
 
@@ -140,7 +140,7 @@ To run the container locally, follow these simple steps:
    sh docker-shell.sh
    ```
 
-3. Once the container is up and running, access the app locally by visiting [http://localhost:9000](http://localhost:3000) in your web browser.
+3. Once the container is up and running, access the api locally by visiting [http://localhost:9000](http://localhost:3000) in your web browser.
 
 
 
